@@ -1,0 +1,16 @@
+extends layout.pug 
+
+block content 
+
+  body
+    .login-container
+      h1 Iniciar Sesión
+      form(action="/login", method="POST")
+        div
+          label(for="email") Email
+          input(type="email", name="email", id="email", required)
+        div
+          label(for="password") Contraseña
+          input(type="password", name="password", id="password", required)
+        div
+          button(type="submit") Iniciar Sesión
