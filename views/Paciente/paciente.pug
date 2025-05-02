@@ -1,0 +1,32 @@
+include ../layout.pug
+
+block content 
+    body 
+        form(action="/paciente/guardar" method="POST")
+    div
+        label(for="nombre") Nombre:
+        input#nombre(type="text" name="nombre" required)
+    div
+        label(for="apellido") Apellido:
+        input#apellido(type="text" name="apellido" required)
+    div
+        label(for="dni") DNI:
+        input#dni(type="text" name="dni" required)
+    div
+        label(for="edad") Edad:
+        input#edad(type="number" name="edad" min="0" required)
+    div
+        label(for="fechaNacimiento") Fecha de Nacimiento:
+        input#fechaNacimiento(type="date" name="fechaNacimiento" required)
+    div
+        label(for="genero") Género:
+        select#genero(name="genero" required)
+            option(value="") Seleccione una opción
+            option(value="masculino") Masculino
+            option(value="femenino") Femenino
+            option(value="otro") Otro
+    div
+        label(for="telefono") Teléfono:
+        input#telefono(type="tel" name="telefono" required)
+    div
+        button(type="submit") Guardar

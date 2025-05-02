@@ -1,18 +1,41 @@
 const express= require('express');
 const PORT=3000;
 const app= express();
-const pug= require('pug');
+const fs= require('fs');
+
 
 
 app.set("view engine", "pug");
 app.set("views", "./views");
 
+app.use(express.urlencoded({extended:true}));
+app.use(express.json());
 
-
-
-app.get("/", (req, res) => {
-    res.render("index.pug");
+app.get("/Persona", (req, res) => {
+    res.render("Persona/persona");
 });
+
+app.post("/persona/add", (req, res) => {
+
+    console.log(req.body);
+    fs.readFile('usuarios.json', (err, data) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send("Error al leer el archivo");
+        }
+        const personas = JSON.parse(data);
+        personas.push(req.body);
+
+        fs.writeFile('usuarios.json', JSON.stringify(personas, null, 2), (err) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).send("Error al escribir el archivo");
+            }
+            res.render("Persona/listado", {personas: personas});
+        });
+    });
+    
+})
 
 
 

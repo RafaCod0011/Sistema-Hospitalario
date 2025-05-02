@@ -1,0 +1,58 @@
+[
+  {
+    "nombre": "Rafael",
+    "apellido": "Cuello",
+    "dni": "39396258",
+    "edad": "44",
+    "fechaNacimiento": "2025-01-06",
+    "genero": "masculino",
+    "telefono": "543544409860",
+    "rol": "administrador",
+    "matricula": "",
+    "especialidad": "",
+    "numeroEmergencia": "",
+    "seguroMedico": ""
+  },
+  {
+    "nombre": "Nicolas",
+    "apellido": "Dominguez",
+    "dni": "22",
+    "edad": "33",
+    "fechaNacimiento": "2025-04-28",
+    "genero": "masculino",
+    "telefono": "543544409860",
+    "rol": "administrador",
+    "matricula": "",
+    "especialidad": "",
+    "numeroEmergencia": "",
+    "seguroMedico": ""
+  },
+  {
+    "nombre": "Miguel",
+    "apellido": "Rodriguez",
+    "dni": "39396258",
+    "edad": "44",
+    "fechaNacimiento": "2025-01-06",
+    "genero": "masculino",
+    "telefono": "543544409860",
+    "rol": "administrador",
+    "matricula": "",
+    "especialidad": "",
+    "numeroEmergencia": "",
+    "seguroMedico": ""
+  },
+  {
+    "nombre": "sss",
+    "apellido": "sss",
+    "dni": "39396258",
+    "edad": "22",
+    "fechaNacimiento": "2025-04-27",
+    "genero": "masculino",
+    "telefono": "543544409860",
+    "rol": "administrador",
+    "matricula": "",
+    "especialidad": "",
+    "numeroEmergencia": "",
+    "seguroMedico": ""
+  }
+]

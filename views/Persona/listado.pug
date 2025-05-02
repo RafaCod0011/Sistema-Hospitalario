@@ -1,0 +1,29 @@
+doctype html
+html
+    head
+        title Listado de Personas
+        
+    body
+        h1 Listado de Personas
+        table
+            thead
+                tr
+                    th DNI
+                    th Nombre
+                    th Apellido
+                    th Edad
+                    th Fecha de Nacimiento
+                    th Género
+                    th Teléfono
+                    th Rol
+            tbody
+                each persona in personas
+                    tr
+                        td= persona.dni
+                        td= persona.nombre
+                        td= persona.apellido
+                        td= persona.edad
+                        td= persona.fechaNacimiento
+                        td= persona.genero
+                        td= persona.telefono
+                        td= persona.rol
