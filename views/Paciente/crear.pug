@@ -1,0 +1,22 @@
+include ../layout.pug
+
+block content 
+    body 
+        form(action="/paciente/add" method="POST")
+    div
+        label(for="obraSocial") Obra Social:
+        input(type="text" name="obraSocial")
+    div 
+        label(for="nroContacto") Número de Contacto:
+        input(type="text" name="nroContacto")
+    div
+        label(for="historialMedico") Historial Médico:
+        textarea(name="historialMedico")
+    div 
+        label(for="motivoInternacion") Motivo de Internación:
+        textarea(name="motivoInternacion")
+    div 
+        label(for="sintomas") Síntomas:
+        textarea(name="sintomas")
+    div
+        button(type="submit") Guardar
