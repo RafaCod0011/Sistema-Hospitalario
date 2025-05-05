@@ -1,0 +1,21 @@
+doctype html
+html
+    head
+        title Listado de Usuarios
+       
+    body
+        h1 Listado de Usuarios
+        table
+            thead
+                tr
+                    th Nombre
+                    th Apellido
+                    th Email
+                    th Rol
+            tbody
+                each usuario in users
+                    tr
+                        td= usuario.nombre
+                        td= usuario.apellido
+                        td= usuario.email
+                        td= usuario.rol

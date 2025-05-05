@@ -1,0 +1,56 @@
+include ../layouts/main.pug
+
+block content
+    form(action="/registro/add", method="POST")
+        div
+            label(for="nombre") Nombre:
+            input#nombre(type="text" name="nombre" required='' value= `${values ? values.name : ''}`)
+        div
+            label(for="apellido") Apellido:
+            input#apellido(type="text" name="apellido" required='' value= `${values ? values.apellido : ''}`)
+        div
+            label(for="dni") DNI:
+            input#dni(type="text" name="dni" required='' value= `${values ? values.dni : ''}`)
+        div
+            label(for="edad") Edad:
+            input#edad(type="number" name="edad" min="0" required value= `${values ? values.edad : ''}`)
+        div
+            label(for="fechaNacimiento") Fecha de Nacimiento:
+            input#fechaNacimiento(type="date" name="fechaNacimiento" required   value= `${values ? values.fechaNacimiento : ''}`)
+        div
+            label(for="genero") Género:
+            select#genero(name="genero" required)
+                option(value="") Seleccione una opción
+                option(value="masculino") Masculino
+                option(value="femenino") Femenino
+                option(value="otro") Otro
+        div
+            label(for="telefono") Teléfono:
+            input#telefono(type="tel" name="telefono" required value= `${values ? values.telefono : ''}`)
+        div 
+            label(for="direccion") Dirección:
+            input#direccion(type="text" name="direccion" required value= `${values ? values.direccion : ''}`)
+        div
+            label(for="rol") Rol:
+            select#rol(name="rol" required onchange="toggleFields()")
+                option(value="") Seleccione un rol
+                option(value="administrador") Administrador
+                option(value="recepcionista") Recepcionista
+                option(value="medico") Médico
+                option(value="enfermero") Enfermero
+        div 
+            label(for="email") Email:
+            input#email(type="email" name="email" required value= `${values ? values.email : ''}`)
+        div
+            label(for="password") Contraseña:
+            input#password(type="password" name="password" required value= `${values ? values.password : ''}`)
+        div 
+            label(for="confirmPassword") Confirmar Contraseña:
+            input#confirmPassword(type="password" name="confirmPassword" required value= `${values ? values.confirmPassword : ''}`)
+        div 
+            button(type="submit")
+                | Registrar
+        if error
+            span.error
+                | #{error}
+        

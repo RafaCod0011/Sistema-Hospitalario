@@ -1,7 +1,9 @@
+const e = require('express');
 const express= require('express');
 const PORT=3000;
 const app= express();
 const fs= require('fs');
+const userController= require('./controller/Usuarios/user.js');
 
 
 
@@ -37,7 +39,15 @@ app.post("/persona/add", (req, res) => {
     
 })
 
+app.get("/login", (req, res) => {
+    res.render("login/registro");
+});
 
+app.post("/registro/add", (req, res) => {
+    console.log(req.body);
+
+    userController.addUser(req, res);
+})
 
 
 // Inicio del servidor
