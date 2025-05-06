@@ -39,7 +39,12 @@ app.post("/persona/add", (req, res) => {
     
 })
 
+
 app.get("/login", (req, res) => {
+    res.render("login/login");
+});
+
+app.get("/registro", (req, res) => {
     res.render("login/registro");
 });
 

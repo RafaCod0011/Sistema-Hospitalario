@@ -1,56 +1,58 @@
-include ../layouts/main.pug
+extends ../layouts/main.pug
 
 block content
-    form(action="/registro/add", method="POST")
-        div
-            label(for="nombre") Nombre:
-            input#nombre(type="text" name="nombre" required='' value= `${values ? values.name : ''}`)
-        div
-            label(for="apellido") Apellido:
-            input#apellido(type="text" name="apellido" required='' value= `${values ? values.apellido : ''}`)
-        div
-            label(for="dni") DNI:
-            input#dni(type="text" name="dni" required='' value= `${values ? values.dni : ''}`)
-        div
-            label(for="edad") Edad:
-            input#edad(type="number" name="edad" min="0" required value= `${values ? values.edad : ''}`)
-        div
-            label(for="fechaNacimiento") Fecha de Nacimiento:
-            input#fechaNacimiento(type="date" name="fechaNacimiento" required   value= `${values ? values.fechaNacimiento : ''}`)
-        div
-            label(for="genero") Género:
-            select#genero(name="genero" required)
-                option(value="") Seleccione una opción
-                option(value="masculino") Masculino
-                option(value="femenino") Femenino
-                option(value="otro") Otro
-        div
-            label(for="telefono") Teléfono:
-            input#telefono(type="tel" name="telefono" required value= `${values ? values.telefono : ''}`)
-        div 
-            label(for="direccion") Dirección:
-            input#direccion(type="text" name="direccion" required value= `${values ? values.direccion : ''}`)
-        div
-            label(for="rol") Rol:
-            select#rol(name="rol" required onchange="toggleFields()")
-                option(value="") Seleccione un rol
-                option(value="administrador") Administrador
-                option(value="recepcionista") Recepcionista
-                option(value="medico") Médico
-                option(value="enfermero") Enfermero
-        div 
-            label(for="email") Email:
-            input#email(type="email" name="email" required value= `${values ? values.email : ''}`)
-        div
-            label(for="password") Contraseña:
-            input#password(type="password" name="password" required value= `${values ? values.password : ''}`)
-        div 
-            label(for="confirmPassword") Confirmar Contraseña:
-            input#confirmPassword(type="password" name="confirmPassword" required value= `${values ? values.confirmPassword : ''}`)
-        div 
-            button(type="submit")
-                | Registrar
-        if error
-            span.error
-                | #{error}
+  
+    .d-flex.justify-content-center
+      .col-md-6
+        h1.text-center.mb-4 Registrar un nuevo Usuario
         
+        form(action="/registro/add", method="POST")
+         .mb-3
+          label(for="nombre", class="form-label") Nombre:
+          input#nombre.form-control(type="text" name="nombre" required='' value= `${values ? values.name : ''}`)
+         .mb-3
+          label(for="apellido", class="form-label") Apellido:
+          input#apellido.form-control(type="text" name="apellido" required='' value= `${values ? values.apellido : ''}`)
+         .mb-3
+          label(for="dni", class="form-label") DNI:
+          input#dni.form-control(type="text" name="dni" required='' value= `${values ? values.dni : ''}`)
+         .mb-3
+          label(for="edad", class="form-label") Edad:
+          input#edad.form-control(type="number" name="edad" min="0" required value= `${values ? values.edad : ''}`)
+         .mb-3
+          label(for="fechaNacimiento", class="form-label") Fecha de Nacimiento:
+          input#fechaNacimiento.form-control(type="date" name="fechaNacimiento" required value= `${values ? values.fechaNacimiento : ''}`)
+         .mb-3
+          label(for="genero", class="form-label") Género:
+          select#genero.form-select(name="genero" required)
+            option(value="") Seleccione una opción
+            option(value="masculino") Masculino
+            option(value="femenino") Femenino
+            option(value="otro") Otro
+         .mb-3
+          label(for="telefono", class="form-label") Teléfono:
+          input#telefono.form-control(type="tel" name="telefono" required value= `${values ? values.telefono : ''}`)
+         .mb-3
+          label(for="direccion", class="form-label") Dirección:
+          input#direccion.form-control(type="text" name="direccion" required value= `${values ? values.direccion : ''}`)
+         .mb-3
+          label(for="rol", class="form-label") Rol:
+          select#rol.form-select(name="rol" required onchange="toggleFields()")
+            option(value="") Seleccione un rol
+            option(value="administrador") Administrador
+            option(value="recepcionista") Recepcionista
+            option(value="medico") Médico
+            option(value="enfermero") Enfermero
+         .mb-3
+          label(for="email", class="form-label") Email:
+          input#email.form-control(type="email" name="email" required value= `${values ? values.email : ''}`)
+         .mb-3
+          label(for="password", class="form-label") Contraseña:
+          input#password.form-control(type="password" name="password" required value= `${values ? values.password : ''}`)
+         .mb-3
+          label(for="confirmPassword", class="form-label") Confirmar Contraseña:
+          input#confirmPassword.form-control(type="password" name="confirmPassword" required value= `${values ? values.confirmPassword : ''}`)
+         .d-grid
+          button.btn.btn-primary(type="submit") Registrar
+         if error
+          .alert.alert-danger.mt-3 #{error}

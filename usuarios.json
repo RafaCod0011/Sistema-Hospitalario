@@ -12,5 +12,47 @@
     "email": "nicolascuello12@gmail.com",
     "password": "333",
     "confirmPassword": "333"
+  },
+  {
+    "nombre": "Agustin",
+    "apellido": "Perez",
+    "dni": "45888996",
+    "edad": "33",
+    "fechaNacimiento": "2017-06-07",
+    "genero": "masculino",
+    "telefono": "4555663322",
+    "direccion": "Ana Maria Galetti 719",
+    "rol": "enfermero",
+    "email": "agustin@gmail.com",
+    "password": "3652",
+    "confirmPassword": "3652"
+  },
+  {
+    "nombre": "Rafael",
+    "apellido": "Cuello",
+    "dni": "39396258",
+    "edad": "28",
+    "fechaNacimiento": "2023-06-07",
+    "genero": "masculino",
+    "telefono": "543544409860",
+    "direccion": "Ana Maria Galetti 719",
+    "rol": "medico",
+    "email": "nicolascuello12@gmail.com",
+    "password": "999",
+    "confirmPassword": "999"
+  },
+  {
+    "nombre": "Rafael",
+    "apellido": "Cuello",
+    "dni": "39396258",
+    "edad": "66",
+    "fechaNacimiento": "2019-06-06",
+    "genero": "otro",
+    "telefono": "543544409860",
+    "direccion": "Ana Maria Galetti 719",
+    "rol": "recepcionista",
+    "email": "nicolascuello12@gmail.com",
+    "password": "123",
+    "confirmPassword": "123"
   }
 ]
