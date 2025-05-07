@@ -1,5 +1,10 @@
 extends ../layouts/main.pug
 
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/administrador.jpg');
+    }
 block content
   
     .d-flex.justify-content-center
@@ -56,3 +61,4 @@ block content
           button.btn.btn-primary(type="submit") Registrar
          if error
           .alert.alert-danger.mt-3 #{error}
+          

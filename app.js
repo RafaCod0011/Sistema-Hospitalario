@@ -1,11 +1,11 @@
-const e = require('express');
+
 const express= require('express');
 const PORT=3000;
 const app= express();
 const fs= require('fs');
 const userController= require('./controller/Usuarios/user.js');
 
-
+app.use(express.static('public'));
 
 app.set("view engine", "pug");
 app.set("views", "./views");

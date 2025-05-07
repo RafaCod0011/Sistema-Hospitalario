@@ -54,5 +54,19 @@
     "email": "nicolascuello12@gmail.com",
     "password": "123",
     "confirmPassword": "123"
+  },
+  {
+    "nombre": "Rafael",
+    "apellido": "Cuello",
+    "dni": "39396258",
+    "edad": "66",
+    "fechaNacimiento": "2015-06-17",
+    "genero": "femenino",
+    "telefono": "4555663322",
+    "direccion": "Ana Maria Galetti 719",
+    "rol": "recepcionista",
+    "email": "nicolascuello12@gmail.com",
+    "password": "366",
+    "confirmPassword": "366"
   }
 ]
