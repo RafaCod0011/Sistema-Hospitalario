@@ -2,13 +2,15 @@ const express = require("express");
 const PORT = 3000;
 const app = express();
 const fs = require("fs");
+const path = require("path");
 
 const userRouter = require("./routes/user");
 
 app.use(express.static("public"));
 
 app.set("view engine", "pug");
-app.set("views", "./views");
+// app.set("views", "./views");
+app.set("views", path.join(__dirname, "views"));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
