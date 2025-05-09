@@ -82,5 +82,33 @@
     "email": "nicolascuello12@gmail.com",
     "password": "123",
     "confirmPassword": "123"
+  },
+  {
+    "nombre": "Rafael",
+    "apellido": "Cuello",
+    "dni": "39396258",
+    "edad": "66",
+    "fechaNacimiento": "2025-05-01",
+    "genero": "masculino",
+    "telefono": "543544409860",
+    "direccion": "Ana Maria Galetti 719",
+    "rol": "medico",
+    "email": "nicolascuello12@gmail.com",
+    "password": "123",
+    "confirmPassword": "123"
+  },
+  {
+    "nombre": "Rafael",
+    "apellido": "Cuello",
+    "dni": "22",
+    "edad": "22",
+    "fechaNacimiento": "2025-05-16",
+    "genero": "femenino",
+    "telefono": "543544409860",
+    "direccion": "Ana Maria Galetti 719",
+    "rol": "enfermero",
+    "email": "nicolascuello12@gmail.com",
+    "password": "123",
+    "confirmPassword": "123"
   }
 ]

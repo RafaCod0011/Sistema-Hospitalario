@@ -2,7 +2,8 @@ const express = require("express");
 const PORT = 3000;
 const app = express();
 const fs = require("fs");
-const userController = require("./controller/Usuarios/user.js");
+
+const userRouter = require("./routes/user");
 
 app.use(express.static("public"));
 
@@ -40,15 +41,9 @@ app.get("/login", (req, res) => {
   res.render("login/login");
 });
 
-app.get("/", (req, res) => {
-  res.render("login/registro");
-});
+// Rutas
 
-app.post("/registro/add", (req, res) => {
-  console.log(req.body);
-
-  userController.addUser(req, res);
-});
+app.use("/", userRouter);
 
 // Inicio del servidor
 
