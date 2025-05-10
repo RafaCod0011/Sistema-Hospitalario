@@ -14,46 +14,58 @@ html
         
          .container-fluid
             .row(style="height: 100vh;")
-                .col-2.col-sm-3.col-xl-2.bg-dark
+                .col-2.col-sm-3.col-xl-2.bg-info.border.border-5 
                     .sticky-top
-                        nav.navbar.bg-dark.border-bottom.border-white.mb-3(data-bs-theme="dark")
+                        nav.navbar.bg-info.border-bottom.border-white.mb-3(data-bs-theme="dark")
                             .container-fluid
-                                a.navbar-brand(href="#") Sistema Hospitalario
+                                a.navbar-brand(href="#") 
+                                    img(src="/img/icons/hospital.png", alt="Hospital", width="60" class="me-2")
+                                    | Sistema Hospitalario
 
                         nav.nav.flex-column 
-                            a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#administracionMenu", aria-expanded="false") Administracion
+                            a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#administracionMenu", aria-expanded="false")
+                                img(src="/img/icons/medication.png", alt="Admin", width="60", class="me-2")
+                                | Administracion
                             .collapse.collapse-transition#administracionMenu(style="transition: height 0.5s ease;")
                                 a.nav-link.text-white.ps-4(href="#") Gestionar Usuarios
                                 a.nav-link.text-white.ps-4(href="#") Configuraciones
 
-                            a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#medicosMenu", aria-expanded="false") Medicos
+                            a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#medicosMenu", aria-expanded="false")
+                                img(src="/img/icons/medic.png", alt="Medico", width="60", class="me-2") 
+                                | Médicos
                             .collapse.collapse-transition#medicosMenu(style="transition: height 0.5s ease;")
                                 a.nav-link.text-white.ps-4(href="#") Listar Medicos
                                 a.nav-link.text-white.ps-4(href="#") Ver Pacientes
 
-                            a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#enfermerosMenu", aria-expanded="false") Enfermeros
+                            a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#enfermerosMenu", aria-expanded="false") 
+                                img(src="/img/icons/nurse.png", alt="Enfermero", width="60", class="me-2")
+                                | Enfermeros
                             .collapse.collapse-transition#enfermerosMenu(style="transition: height 0.5s ease;")
                                 a.nav-link.text-white.ps-4(href="#") Listar Enfermeros
-                                a.nav-link.text-white.ps-4(href="#") Ver Turnos
+                                a.nav-link.text-white.ps-4(href="#") Ver Pacientes
 
-                            a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#pacientesMenu", aria-expanded="false") Pacientes
+                            a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#pacientesMenu", aria-expanded="false")
+                                img(src="/img/icons/pacient.png", alt="Paciente", width="60", class="me-2") 
+                                | Pacientes
                             .collapse.collapse-transition#pacientesMenu(style="transition: height 0.5s ease;")
                                 a.nav-link.text-white.ps-4(href="#") Listar Pacientes
                                 a.nav-link.text-white.ps-4(href="#") Historial Clinico
 
-                            a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#internacionMenu", aria-expanded="false") Internacion
+                            a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#internacionMenu", aria-expanded="false")
+                                img(src="/img/icons/internacion.png", alt="Internacion", width="60", class="me-2") 
+                                | Internación
                             .collapse.collapse-transition#internacionMenu(style="transition: height 0.5s ease;")
                                 a.nav-link.text-white.ps-4(href="#") Ver Habitaciones
                                 a.nav-link.text-white.ps-4(href="#") Gestionar Internaciones
 
                 .col-10.col-sm-9.col-xl-10.p-0.m-0.main-bg
-                    nav.navbar.navbar-expand-lg.bg-body-tertiary
+                    nav.navbar.navbar-expand-lg
                         .container-fluid
                             ul.navbar-nav.ms-auto
                                 li.nav-item
                                     a.nav-link(href="#")
-                                        i.bi.bi-arrow-bar-right.me-2
-                                        | Logout
+                                        img(src="/img/icons/exit.png", alt="User", width="30", class="me-2")
+                                        | Cerrar Sesión
                     .container
                         block content   
 
