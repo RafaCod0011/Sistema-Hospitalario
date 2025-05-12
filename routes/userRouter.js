@@ -4,7 +4,7 @@ const userController = require("../controller/Usuarios/userController");
 
 // Ruta Registro
 router.get("/", (req, res) => {
-  res.render("login/registro");
+  res.render("Registro/registro");
 });
 
 // Ruta Registro/add

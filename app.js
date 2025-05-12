@@ -4,7 +4,7 @@ const app = express();
 const fs = require("fs");
 const path = require("path");
 
-const userRouter = require("./routes/user");
+const userRouter = require("./routes/userRouter");
 
 app.use(express.static(path.join(__dirname, "public")));
 

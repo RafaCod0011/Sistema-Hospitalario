@@ -250,5 +250,33 @@
     "confirmalEmail": "nicolascuello12@gmail.com",
     "password": "123",
     "confirmPassword": "123"
+  },
+  {
+    "nombre": "Rafael",
+    "apellido": "Cuello",
+    "dni": "45888996",
+    "fechaNacimiento": "2025-05-20",
+    "genero": "femenino",
+    "telefono": "543544409860",
+    "direccion": "Ana Maria Galetti 719",
+    "rol": "medico",
+    "email": "nicolascuello12@gmail.com",
+    "confirmalEmail": "nicolascuello12@gmail.com",
+    "password": "123",
+    "confirmPassword": "123"
+  },
+  {
+    "nombre": "Rafael",
+    "apellido": "Cuello",
+    "dni": "22",
+    "fechaNacimiento": "2025-04-27",
+    "genero": "masculino",
+    "telefono": "543544409860",
+    "direccion": "Ana Maria Galetti 719",
+    "rol": "recepcionista",
+    "email": "nicolascuello12@gmail.com",
+    "confirmalEmail": "nicolascuello12@gmail.com",
+    "password": "123",
+    "confirmPassword": "123"
   }
 ]
