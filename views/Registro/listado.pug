@@ -7,31 +7,27 @@ block style
     }
 block content
 
-        h1.text-center.mb-4 Listado de Usuarios
+        h1.text-center.mb-4 Listado de Personas
         .table-responsive
             table.table.table-striped.table-hover.table-bordered
                 thead.bg-dark.text-white
                     tr
                         th(scope="col") ID
                         th(scope="col") Nombre
-                        th(scope="col") Apellido
                         th(scope="col") DNI
                         th(scope="col") Fecha de Nacimiento
                         th(scope="col") Género
                         th(scope="col") Teléfono
                         th(scope="col") Dirección
-                        th(scope="col") Rol
                         
                 tbody
-                    each user in users
+                    each persona in personas
                         tr
-                            td= user.id
-                            td= user.nombre
-                            td= user.apellido
-                            td= user.dni
-                            td= user.fechaNacimiento
-                            td= user.genero
-                            td= user.telefono
-                            td= user.direccion
-                            td= user.rol
+                            td= persona.id
+                            td= persona.nombre
+                            td= persona.dni
+                            td= persona.fecha_nacimiento
+                            td= persona.genero
+                            td= persona.telefono
+                            td= persona.direccion
                            

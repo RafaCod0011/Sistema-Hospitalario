@@ -1,47 +1,37 @@
 const express = require("express");
-const PORT = 3000;
 const app = express();
 const path = require("path");
+const sequelize = require("./models/sequelize/index");
+require("./models/sequelize/Personas/identidad_medica");
+require("./models/sequelize/Pacientes/pacientes");
 
-//Conexion a la base de datos
+// Importar rutas
 
-const { sequelize } = require("./models/sequelize/index");
+const personaRouter = require("./routes/Persona/personaRouter");
 
-sequelize
-  .sync({ force: false })
-  .then(() => {
-    console.log("Conectado a la base de datos");
-  })
-  .catch((error) => {
-    console.log("Error al conectar a la base de datos", error);
-  });
-
-const userRouter = require("./routes/userRouter");
-
+// Middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, "public")));
-
 app.set("view engine", "pug");
-// app.set("views", "./views");
 app.set("views", path.join(__dirname, "views"));
 
+// Milddware obtener datos del formulario
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/login", (req, res) => {
-  res.render("login/login");
-});
+// Rutas
 
-// ******* Rutas ********
-// Ruta Registro
-app.use("/", userRouter);
-
-//Ruta Pacientes
-app.get("/pacientes", (req, res) => {
-  res.render("Paciente/crear");
-});
+app.use("/persona", personaRouter);
 
 // Inicio del servidor
-
-app.listen(PORT, () => {
-  console.log("Servidor iniciado en el puerto http://localhost:${PORT}");
-});
+const PORT = process.env.PORT || 3000;
+sequelize
+  .sync({ alter: true })
+  .then(() => {
+    console.log("Modelos sincronizados");
+    app.listen(PORT, () => {
+      console.log(`Servidor iniciado en http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Error al sincronizar modelos:", err);
+  });
