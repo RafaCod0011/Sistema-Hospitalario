@@ -25,7 +25,6 @@ function validarPersona(persona, res) {
     });
   }
 
-  // Validar formato de email
   if (!regex.email.test(persona.email)) {
     return { error: "Formato de email inválido" };
   }

@@ -27,6 +27,13 @@ block content
         label(for="confirmarCorreo") Confirmar Correo Electrónico
         input.form-control#confirmarCorreo(type="email" name="confirmarCorreo" placeholder="@gmail" value= values ? values.confirmarCorreo : '' required)
 
+      .col-md-6 
+        label(for="rol") Rol
+        select.form-control#rol(name="rol" required)
+          option(value="" disabled selected) Seleccione un rol
+          each rol in roles
+            option(value=rol.id) #{rol.nombre}
+
       .col-12.text-center
         button.btn.btn-primary.btn-lg(type="submit") Registrar
         if error

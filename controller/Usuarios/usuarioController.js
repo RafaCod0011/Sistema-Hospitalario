@@ -1,4 +1,5 @@
 const Usuario = require("../../models/sequelize/Usuarios/usuario");
+const Rol = require("../../models/sequelize/Usuarios/rol");
 
 function validarUsuario(Usuario) {
   const regex = {
@@ -36,8 +37,10 @@ async function crear(req, res) {
   const errorValidacion = validarUsuario(usuario, true);
 
   if (errorValidacion) {
+    const roles = await Rol.findAll();
     return res.status(400).render("Usuario/registro", {
       error: errorValidacion.error,
+      roles,
       values: usuario,
     });
   }
@@ -46,26 +49,30 @@ async function crear(req, res) {
     const usuarioExistente = await Usuario.findOne({
       where: { username: usuario.user },
     });
+
     if (usuarioExistente) {
+      const roles = await Rol.findAll();
       return res.status(400).render("Usuario/registro", {
         error: "El nombre de usuario ya está en uso",
+        roles,
         values: usuario,
       });
     }
 
-    // Mapear los campos del formulario a los del modelo
+    // Crear usuario (mapea los campos si es necesario)
     await Usuario.create({
       username: usuario.user,
       password: usuario.pass,
       correo: usuario.correo,
-      // agrega otros campos si tu modelo los requiere
     });
 
     res.redirect("/usuario/listar");
   } catch (error) {
-    console.error("Error al crear el usuario:", error);
+    console.error("Error al crear usuario:", error);
+    const roles = await Rol.findAll();
     res.status(500).render("Usuario/registro", {
-      error: "Error al crear el usuario",
+      error: "Error interno al crear el usuario",
+      roles,
       values: usuario,
     });
   }
@@ -84,7 +91,20 @@ async function listar(req, res) {
 }
 
 async function formulario(req, res) {
-  res.render("Usuario/registro");
+  try {
+    const roles = await Rol.findAll();
+    res.render("Usuario/registro", {
+      roles: roles,
+      values: null,
+      editar: false,
+    });
+  } catch (error) {
+    console.error("Error al obtener los roles:", error);
+    res.status(500).render("Usuario/registro", {
+      roles: [],
+      error: "Error al obtener los roles",
+    });
+  }
 }
 module.exports = {
   validarUsuario,

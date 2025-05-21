@@ -1,9 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
-const sequelize = require("../index");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../../../config/db");
 
-class Usuario extends Model {}
-
-Usuario.init(
+const Usuario = sequelize.define(
+  "Usuario",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     username: {
@@ -28,14 +27,13 @@ Usuario.init(
   }
 );
 
-if (sequelize.models.Rol) {
-  Usuario.belongsToMany(sequelize.models.Rol, {
-    through: sequelize.models.UsuarioRol,
+Usuario.associate = (models) => {
+  Usuario.belongsToMany(models.Rol, {
+    through: "usuarios_roles",
     foreignKey: "usuario_id",
     otherKey: "rol_id",
     as: "roles",
-    onDelete: "CASCADE",
   });
-}
+};
 
 module.exports = Usuario;

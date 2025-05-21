@@ -1,13 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
-console.log("Booting personas.js from:", __dirname);
-const sequelize = require("../index");
-const IdentidadMedica = require("./identidad_medica");
-const Profesional = require("./profesionales");
-const Recepcionista = require("./recepcionistas");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../../../config/db");
 
-class Personas extends Model {}
-
-Personas.init(
+const Personas = sequelize.define(
+  "Personas",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     nombre: DataTypes.STRING,
@@ -37,18 +32,25 @@ Personas.init(
   }
 );
 
-Personas.hasMany(IdentidadMedica, { foreignKey: "persona_id" });
-IdentidadMedica.belongsTo(Personas, { foreignKey: "persona_id" });
-
-Personas.hasOne(Profesional, { foreignKey: "persona_id" });
-Profesional.belongsTo(Personas);
-
-Personas.hasOne(Recepcionista, { foreignKey: "persona_id" });
-Recepcionista.belongsTo(Personas, {
-  foreignKey: "persona_id",
-  onDelete: "SET NULL",
-  onUpdate: "CASCADE",
-  as: "persona",
-});
+Personas.associate = (models) => {
+  Personas.hasMany(models.IdentidadMedica, {
+    foreignKey: "persona_id",
+    as: "identidades_medicas",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+  Personas.hasMany(models.Profesionales, {
+    foreignKey: "persona_id",
+    as: "profesionales",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+  Personas.hasMany(models.Recepcionista, {
+    foreignKey: "persona_id",
+    as: "recepcionistas",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+};
 
 module.exports = Personas;

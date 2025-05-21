@@ -1,12 +1,15 @@
-const { Model, DataTypes } = require("sequelize");
-const sequelize = require("../index");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../../../config/db");
 
-class Rol extends Model {}
-
-Rol.init(
+const Rol = sequelize.define(
+  "Rol",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    nombre: { type: DataTypes.STRING(50), allowNull: false, unique: true },
+    nombre: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: "unique_rol_nombre",
+    },
   },
   {
     sequelize,
@@ -16,12 +19,13 @@ Rol.init(
   }
 );
 
-Rol.belongsToMany(sequelize.models.Usuario, {
-  through: sequelize.models.UsuarioRol,
-  foreignKey: "rol_id",
-  otherKey: "usuario_id",
-  as: "usuarios",
-  onDelete: "CASCADE",
-});
+Rol.associate = (models) => {
+  Rol.belongsToMany(models.Usuario, {
+    through: "usuarios_roles",
+    foreignKey: "rol_id",
+    otherKey: "usuario_id",
+    as: "usuarios",
+  });
+};
 
 module.exports = Rol;

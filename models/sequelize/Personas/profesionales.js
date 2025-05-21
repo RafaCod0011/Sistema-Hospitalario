@@ -1,9 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
-const sequelize = require("../index");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../../../config/db");
 
-class Profesionales extends Model {}
-
-Profesionales.init(
+const Profesionales = sequelize.define(
+  "Profesionales",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     usuario_id: DataTypes.INTEGER,

@@ -1,10 +1,8 @@
-// models/Pacientes/paciente.js
-const { Model, DataTypes } = require("sequelize");
-const sequelize = require("../index");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../../../config/db");
 
-class Paciente extends Model {}
-
-Paciente.init(
+const Paciente = sequelize.define(
+  "Paciente",
   {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
@@ -25,14 +23,20 @@ Paciente.init(
   }
 );
 
-// **Aquí** definimos la asociación, **pero solo si IdentidadMedica ya está registrado**.
-if (sequelize.models.IdentidadMedica) {
-  Paciente.belongsTo(sequelize.models.IdentidadMedica, {
+Paciente.associate = (models) => {
+  Paciente.belongsTo(models.ObraSocial, {
+    foreignKey: "obra_social_id",
+    as: "obra_social",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+
+  Paciente.belongsTo(models.IdentidadMedica, {
     foreignKey: "identidad_medica_id",
     as: "identidad_medica",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });
-}
+};
 
 module.exports = Paciente;

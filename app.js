@@ -1,14 +1,13 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const sequelize = require("./models/sequelize/index");
-require("./models/sequelize/Personas/identidad_medica");
-require("./models/sequelize/Pacientes/pacientes");
+const sequelize = require("./config/db");
 
 // Importar rutas
 
 const personaRouter = require("./routes/Persona/personaRouter");
-const usuarioRouter = require("./routes/Usuario/usuarioRouter");
+
+// const usuarioRouter = require("./routes/Usuario/usuarioRouter");
 
 // Middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, "public")));
@@ -22,7 +21,10 @@ app.use(express.json());
 // Rutas
 
 app.use("/persona", personaRouter);
-app.use("/usuario", usuarioRouter);
+
+//PAUSADO PARA LUEGO DESALLORAR CON AUTENTICACION
+
+// app.use("/usuario", usuarioRouter);
 
 // Inicio del servidor
 const PORT = process.env.PORT || 3000;
