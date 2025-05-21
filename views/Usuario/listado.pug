@@ -1,0 +1,25 @@
+extends ../layouts/main.pug
+
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/background/administrador.jpg');
+    }
+
+block content
+  h1.text-center.mb-4 Listado de Usuarios
+  .table-responsive
+    table.table.table-striped.table-hover.table-bordered
+      thead.bg-dark.text-white
+        tr
+          th(scope="col") ID
+          th(scope="col") UserName
+          th(scope="col") Correo Electrónico
+      tbody
+        each usuario in usuarios
+          tr
+            td= usuario.id
+            td= usuario.username
+            td= usuario.correo
+  .text-center
+    a.btn.btn-primary.btn-lg(href="/usuario/nuevo") Nuevo Usuario

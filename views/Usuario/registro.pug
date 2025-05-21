@@ -1,0 +1,33 @@
+extends ../layouts/main.pug
+
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/background/administrador.jpg');
+    }
+
+block content
+
+  h2.text-center.mb-4 Registrar usuario 
+  form(action="/usuario/nuevo" method="POST") 
+    .row.g-3
+      .col-md-6 
+        label(for="user") UserName
+        input.form-control#user(type="text" name="user" placeholder="user" value= values ? values.user : '' required)
+      
+      .col-md-6 
+        label(for="pass") Contraseña
+        input.form-control#pass(type="text" name="pass" placeholder="******" value= values ? values.pass : '' required)
+
+      .col-md-6
+        label(for="correo") Correo Electrónico
+        input.form-control#correo(type="email" name="correo" placeholder="@gmail" value= values ? values.correo : '' required)
+      
+      .col-md-6
+        label(for="confirmarCorreo") Confirmar Correo Electrónico
+        input.form-control#confirmarCorreo(type="email" name="confirmarCorreo" placeholder="@gmail" value= values ? values.confirmarCorreo : '' required)
+
+      .col-12.text-center
+        button.btn.btn-primary.btn-lg(type="submit") Registrar
+        if error
+          .alert.alert-danger.mt-3 #{error}

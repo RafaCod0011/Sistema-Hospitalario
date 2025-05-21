@@ -8,6 +8,7 @@ require("./models/sequelize/Pacientes/pacientes");
 // Importar rutas
 
 const personaRouter = require("./routes/Persona/personaRouter");
+const usuarioRouter = require("./routes/Usuario/usuarioRouter");
 
 // Middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, "public")));
@@ -21,6 +22,7 @@ app.use(express.json());
 // Rutas
 
 app.use("/persona", personaRouter);
+app.use("/usuario", usuarioRouter);
 
 // Inicio del servidor
 const PORT = process.env.PORT || 3000;

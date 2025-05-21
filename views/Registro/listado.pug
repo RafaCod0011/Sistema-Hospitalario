@@ -5,29 +5,34 @@ block style
     .main-bg {
       background-image: url('/img/background/administrador.jpg');
     }
-block content
 
-        h1.text-center.mb-4 Listado de Personas
-        .table-responsive
-            table.table.table-striped.table-hover.table-bordered
-                thead.bg-dark.text-white
-                    tr
-                        th(scope="col") ID
-                        th(scope="col") Nombre
-                        th(scope="col") DNI
-                        th(scope="col") Fecha de Nacimiento
-                        th(scope="col") Género
-                        th(scope="col") Teléfono
-                        th(scope="col") Dirección
-                        
-                tbody
-                    each persona in personas
-                        tr
-                            td= persona.id
-                            td= persona.nombre
-                            td= persona.dni
-                            td= persona.fecha_nacimiento
-                            td= persona.genero
-                            td= persona.telefono
-                            td= persona.direccion
-                           
+block content
+  h1.text-center.mb-4 Listado de Personas
+  .table-responsive
+    table.table.table-striped.table-hover.table-bordered
+      thead.bg-dark.text-white
+        tr
+          th(scope="col") ID
+          th(scope="col") Nombre
+          th(scope="col") DNI
+          th(scope="col") Fecha de Nacimiento
+          th(scope="col") Género
+          th(scope="col") Teléfono
+          th(scope="col") Dirección
+          th Acciones
+      tbody
+        each persona in personas
+          tr
+            td= persona.id
+            td= persona.nombre
+            td= persona.dni
+            td= persona.fecha_nacimiento
+            td= persona.genero
+            td= persona.telefono
+            td= persona.direccion
+            td
+              a.btn.btn-warning.btn-sm(href="/persona/editar/" + persona.id) Editar
+
+  
+  .text-center
+    a.btn.btn-primary.btn-lg(href="/persona/nuevo") Nueva Persona
