@@ -1,0 +1,44 @@
+extends ../layouts/main.pug
+
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/background/Medico.jpg');
+    }
+block content
+
+        h1.text-center.mb-4 Listado de Medicos
+        .table-responsive
+            table.table.table-striped.table-hover.table-bordered
+                thead.bg-dark.text-white
+                    tr
+                        th(scope="col") ID
+                        th(scope="col") Nombre
+                        th(scope="col") Cargo
+                        th(scope="col") DNI
+                        th(scope="col") Fecha de Nacimiento
+                        th(scope="col") Género
+                        th(scope="col") Teléfono
+                        th(scope="col") Dirección
+                        th(scope="col") Especialidad
+                        th(scope="col") Matricula
+                        
+                        
+                tbody
+                    each medico in medicos
+                        tr
+                            td= medico.id
+                            td= medico.persona ? medico.persona.nombre : ''
+                            td= medico.profesional_salud
+                            td= medico.persona ? medico.persona.dni : ''
+                            td= medico.persona ? medico.persona.fecha_nacimiento : ''
+                            td= medico.persona ? medico.persona.genero : ''
+                            td= medico.persona ? medico.persona.telefono : ''
+                            td= medico.persona ? medico.persona.direccion : ''
+                            td= medico.Especialidad ? medico.Especialidad.descripcion : ''
+                            td= medico.matricula
+                            
+
+
+        .text-center
+           a.btn.btn-primary.btn-lg(href="/profesional/nuevo") Buscar Persona

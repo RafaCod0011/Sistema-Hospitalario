@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../../config/db");
 
 const Personas = sequelize.define(
-  "Personas",
+  "Persona",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     nombre: DataTypes.STRING,
@@ -29,25 +29,31 @@ const Personas = sequelize.define(
     sequelize,
     modelName: "personas",
     tableName: "personas",
+    createdAt: false,
+    updatedAt: false,
   }
 );
 
 Personas.associate = (models) => {
-  Personas.hasMany(models.IdentidadMedica, {
+  console.log(
+    "Ejecutando asociación para Persona con modelos:",
+    Object.keys(models)
+  );
+  Personas.hasOne(models.IdentidadMedica, {
     foreignKey: "persona_id",
-    as: "identidades_medicas",
+    as: "identidad_medica",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });
-  Personas.hasMany(models.Profesionales, {
+  Personas.hasOne(models.Profesional, {
     foreignKey: "persona_id",
-    as: "profesionales",
+    as: "profesional",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });
-  Personas.hasMany(models.Recepcionista, {
+  Personas.hasOne(models.Recepcionista, {
     foreignKey: "persona_id",
-    as: "recepcionistas",
+    as: "recepcionista",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });

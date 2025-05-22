@@ -1,3 +1,5 @@
+console.log("Iniciando asociaciones en index.js");
+
 // Modelos
 const Usuario = require("./Usuarios/usuario");
 const Rol = require("./Usuarios/rol");
@@ -5,27 +7,31 @@ const UsuarioRol = require("./Usuarios/usuario_rol");
 const IdentidadMedica = require("./Personas/identidad_medica");
 const Paciente = require("./Pacientes/pacientes");
 const ObraSocial = require("./Pacientes/obra_social");
-const Profesionales = require("./Personas/profesionales");
-const Recepcionistas = require("./Personas/recepcionistas");
+const Profesional = require("./Personas/profesionales");
+const Recepcionista = require("./Personas/recepcionistas");
 const Persona = require("./Personas/personas");
+const Especialidad = require("./Personas/especialidad");
 
 // Asociaciones
-Usuario.associate({ Rol });
-Rol.associate({ Usuario });
-UsuarioRol.associate({ Usuario, Rol });
-IdentidadMedica.associate({ Paciente });
-Paciente.associate({ IdentidadMedica, ObraSocial });
-Persona.associate({
+const models = {
+  Persona,
+  Profesional,
+  Recepcionista,
   IdentidadMedica,
-  Recepcionistas,
-  Profesionales,
-});
-
-module.exports = {
+  Especialidad,
   Usuario,
   Rol,
   UsuarioRol,
-  IdentidadMedica,
   Paciente,
-  Persona,
+  ObraSocial,
 };
+
+// Ejecutar asociaciones
+Object.values(models)
+  .filter((model) => typeof model.associate === "function")
+  .forEach((model) => model.associate(models));
+
+console.log("Asociaciones en Profesional:", Profesional.associations);
+console.log("Asociaciones en Persona:", Persona.associations);
+
+module.exports = { ...models };

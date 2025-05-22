@@ -148,7 +148,7 @@ async function actualizar(req, res) {
 
 async function listar(req, res) {
   try {
-    const personas = await Persona.findAll();
+    const personas = await Persona.findAll({});
     res.render("Registro/listado", { personas });
   } catch (error) {
     console.log(error);

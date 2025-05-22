@@ -1,0 +1,59 @@
+extends ../layouts/main.pug
+
+block style
+    style.
+        .main-bg {
+            background-image: url('/img/background/Medico.jpg');
+        }
+
+block content
+    h2.text-center.mb-4 Registro de Profesionales
+    form(action="/profesional/crear" method="POST")
+        .row.g-3
+            .col-md-6
+                label.form-label Nombre
+                p.form-control-plaintext #{ (values && values.nombre) ? values.nombre : (persona && persona.nombre) ? persona.nombre : '' }
+                if (persona && persona.id) || (values && values.persona_id)
+                input(type="hidden" name="persona_id" value= persona ? persona.id : values.persona_id)
+                
+
+            .col-md-6
+                label.form-label(for="matricula") Matrícula
+                input.form-control(
+                    type="text"
+                    name="matricula"
+                    id="matricula"
+                    placeholder="Ingrese la matrícula"
+                    required
+                    value= values && values.matricula ? values.matricula : ''
+                )
+
+            .col-md-6
+                label.form-label(for="tipo") Tipo de Profesional
+                select.form-select(name="tipo" id="tipo" required)
+                    option(value="" disabled selected=!(values && values.tipo)) Seleccione un tipo
+                    option(
+                        value="Medico"
+                        selected= values && values.tipo=='Medico'
+                    ) Médico
+                    option(
+                        value="Enfermero"
+                        selected= values && values.tipo=='Enfermero'
+                    ) Enfermero
+
+            .col-md-6
+                label.form-label(for="especialidad") Especialidad
+                select.form-select(name="especialidad" id="especialidad" required)
+                    option(value="" disabled selected=!(values && values.especialidad)) Seleccione una especialidad
+                    each esp in especialidades
+                        option(
+                            value=esp.id
+                            selected= values && values.especialidad==esp.id
+                        ) #{ esp.descripcion }
+
+            .col-12.text-center
+                button.btn.btn-primary.btn-lg(type="submit")
+                    | #{ editar ? 'Actualizar' : 'Registrar' }
+                if error
+                    .alert.alert-danger.mt-3 #{ error }
+

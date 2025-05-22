@@ -3,9 +3,14 @@ const app = express();
 const path = require("path");
 const sequelize = require("./config/db");
 
+const models = require("./models/sequelize/index");
+console.log("Modelos y asociaciones cargados:", Object.keys(models));
+
 // Importar rutas
 
 const personaRouter = require("./routes/Persona/personaRouter");
+const profesionalRouter = require("./routes/Persona/profesionalRouter");
+const medicoRouter = require("./routes/Persona/medicoRouter");
 
 // const usuarioRouter = require("./routes/Usuario/usuarioRouter");
 
@@ -21,6 +26,8 @@ app.use(express.json());
 // Rutas
 
 app.use("/persona", personaRouter);
+app.use("/profesional", profesionalRouter);
+app.use("/medico", medicoRouter);
 
 //PAUSADO PARA LUEGO DESALLORAR CON AUTENTICACION
 

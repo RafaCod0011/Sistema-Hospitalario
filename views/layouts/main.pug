@@ -27,17 +27,17 @@ html
                                 | Administracion
                             .collapse.collapse-transition#administracionMenu(style="transition: height 0.5s ease;")
                                 a.nav-link.text-white.ps-4(href="/usuario/nuevo") Gestionar Usuarios
-                                a.nav-link.text-white.ps-4(href="#") Configuraciones
                                 a.nav-link.text-white.ps-4(href="/persona/nuevo") Registrar Persona
-                                a.nav-link.text-white.ps-4(href="/persona/listar") Listar Personas
+                                a.nav-link.text-white.ps-4(href="/persona/listar") Ver Personas
+                                a.nav-link.text-white.ps-4(href="/profesional/listar") Ver Profesionales
 
 
                             a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#medicosMenu", aria-expanded="false")
                                 img(src="/img/icons/medic.png", alt="Medico", width="60", class="me-2") 
                                 | Médicos
                             .collapse.collapse-transition#medicosMenu(style="transition: height 0.5s ease;")
-                                a.nav-link.text-white.ps-4(href="#") Registrar Medicos
-                                a.nav-link.text-white.ps-4(href="#") Ver Medicos
+                                a.nav-link.text-white.ps-4(href="/profesional/nuevo") Registrar Medicos
+                                a.nav-link.text-white.ps-4(href="/medico/listar") Ver Medicos
 
                             a.nav-link.text-white(href="#", data-bs-toggle="collapse", data-bs-target="#enfermerosMenu", aria-expanded="false") 
                                 img(src="/img/icons/nurse.png", alt="Enfermero", width="60", class="me-2")
