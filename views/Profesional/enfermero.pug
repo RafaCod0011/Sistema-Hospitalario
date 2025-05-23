@@ -1,0 +1,44 @@
+extends ../layouts/main.pug
+
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/background/enfermera.jpg');
+    }
+block content
+
+        h1.text-center.mb-4 Listado de Enfermeros
+        .table-responsive
+            table.table.table-striped.table-hover.table-bordered
+                thead.bg-dark.text-white
+                    tr
+                        th(scope="col") ID
+                        th(scope="col") Nombre
+                        th(scope="col") Cargo
+                        th(scope="col") DNI
+                        th(scope="col") Fecha de Nacimiento
+                        th(scope="col") Género
+                        th(scope="col") Teléfono
+                        th(scope="col") Dirección
+                        th(scope="col") Especialidad
+                        th(scope="col") Matricula
+                        
+                        
+                tbody
+                    each enfermero in enfermeros
+                        tr
+                            td= enfermero.id
+                            td= enfermero.persona ? enfermero.persona.nombre : ''
+                            td= enfermero.profesional_salud
+                            td= enfermero.persona ? enfermero.persona.dni : ''
+                            td= enfermero.persona ? enfermero.persona.fecha_nacimiento : ''
+                            td= enfermero.persona ? enfermero.persona.genero : ''
+                            td= enfermero.persona ? enfermero.persona.telefono : ''
+                            td= enfermero.persona ? enfermero.persona.direccion : ''
+                            td= enfermero.Especialidad ? enfermero.Especialidad.descripcion : ''
+                            td= enfermero.matricula
+                            
+
+
+        .text-center
+           a.btn.btn-primary.btn-lg(href="/profesional/nuevo") Buscar Persona

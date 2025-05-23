@@ -11,6 +11,7 @@ console.log("Modelos y asociaciones cargados:", Object.keys(models));
 const personaRouter = require("./routes/Persona/personaRouter");
 const profesionalRouter = require("./routes/Persona/profesionalRouter");
 const medicoRouter = require("./routes/Persona/medicoRouter");
+const enfermeroRouter = require("./routes/Persona/enfermeroRouter");
 
 // const usuarioRouter = require("./routes/Usuario/usuarioRouter");
 
@@ -28,6 +29,7 @@ app.use(express.json());
 app.use("/persona", personaRouter);
 app.use("/profesional", profesionalRouter);
 app.use("/medico", medicoRouter);
+app.use("/enfermero", enfermeroRouter);
 
 //PAUSADO PARA LUEGO DESALLORAR CON AUTENTICACION
 
