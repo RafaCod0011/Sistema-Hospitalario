@@ -12,7 +12,6 @@ const Paciente = sequelize.define(
     identidad_medica_id: { type: DataTypes.INTEGER, allowNull: false },
     obra_social_id: { type: DataTypes.INTEGER, allowNull: true },
     contacto_emergencia: DataTypes.STRING,
-    fecha_registro: DataTypes.DATE,
   },
   {
     sequelize,

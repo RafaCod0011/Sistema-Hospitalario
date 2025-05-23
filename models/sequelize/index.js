@@ -11,6 +11,9 @@ const Profesional = require("./Personas/profesionales");
 const Recepcionista = require("./Personas/recepcionistas");
 const Persona = require("./Personas/personas");
 const Especialidad = require("./Personas/especialidad");
+const Admision = require("./Admisiones/admisiones");
+const AdmisionesMotivo = require("./Admisiones/admisiones_motivo");
+const Internacion = require("./Internacion/internaciones");
 
 // Asociaciones
 const models = {
@@ -24,6 +27,9 @@ const models = {
   UsuarioRol,
   Paciente,
   ObraSocial,
+  Admision,
+  AdmisionesMotivo,
+  Internacion,
 };
 
 // Ejecutar asociaciones

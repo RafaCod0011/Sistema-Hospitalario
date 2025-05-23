@@ -1,0 +1,19 @@
+extends ../layouts/main.pug
+
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/background/administrador.jpg');
+    }
+
+block content
+  h2.text-center.mb-4 Registro de Admisiones
+  form(method="POST", action="/admisiones/buscar")
+    .row.g-3
+      .col-md6
+        label(for="dni") DNI
+        input.form-control#dni(type="text", name="dni", placeholder="Ingrese DNI",required)
+      .col-12.text-center
+        button.btn.btn-primary.btn-lg(type="submit") Buscar
+    if error
+      .alert.alert-danger.mt-3 #{error}

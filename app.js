@@ -12,6 +12,7 @@ const personaRouter = require("./routes/Persona/personaRouter");
 const profesionalRouter = require("./routes/Persona/profesionalRouter");
 const medicoRouter = require("./routes/Persona/medicoRouter");
 const enfermeroRouter = require("./routes/Persona/enfermeroRouter");
+const admisionRouter = require("./routes/Admisiones/admisionRouter");
 
 // const usuarioRouter = require("./routes/Usuario/usuarioRouter");
 
@@ -30,6 +31,7 @@ app.use("/persona", personaRouter);
 app.use("/profesional", profesionalRouter);
 app.use("/medico", medicoRouter);
 app.use("/enfermero", enfermeroRouter);
+app.use("/admisiones", admisionRouter);
 
 //PAUSADO PARA LUEGO DESALLORAR CON AUTENTICACION
 
