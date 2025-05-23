@@ -17,7 +17,7 @@ html
                     .sticky-top
                         nav.navbar.bg-info.border-bottom.border-white.mb-3(data-bs-theme="dark")
                             .container-fluid
-                                a.navbar-brand(href="#") 
+                                a.navbar-brand(href="/") 
                                     img(src="/img/icons/hospital.png", alt="Hospital", width="60" class="me-2")
                                     | Sistema Hospitalario
 
@@ -64,6 +64,10 @@ html
                     nav.navbar.navbar-expand-lg
                         .container-fluid
                             ul.navbar-nav.ms-auto
+                                li.nav-item
+                                    a.nav-link.emergencia-link(href="#")
+                                        img(src="/img/icons/emergency.png", alt="User", width="30", class="me-2")
+                                        | Registrar Emergencia
                                 li.nav-item
                                     a.nav-link(href="#")
                                         img(src="/img/icons/exit.png", alt="User", width="30", class="me-2")

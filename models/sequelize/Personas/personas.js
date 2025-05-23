@@ -39,7 +39,7 @@ Personas.associate = (models) => {
     "Ejecutando asociación para Persona con modelos:",
     Object.keys(models)
   );
-  Personas.hasOne(models.IdentidadMedica, {
+  Personas.hasMany(models.IdentidadMedica, {
     foreignKey: "persona_id",
     as: "identidad_medica",
     onDelete: "CASCADE",

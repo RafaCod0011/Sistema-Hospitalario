@@ -1,5 +1,6 @@
 const Profesional = require("../../models/sequelize/Personas/profesionales");
 const Especialidad = require("../../models/sequelize/Personas/especialidad");
+const Recepcionista = require("../../models/sequelize/Personas/recepcionistas");
 const Persona = require("../../models/sequelize/Personas/personas");
 
 function validarMedico({ persona_id, matricula, tipo, especialidad }) {
@@ -42,6 +43,26 @@ async function crear(req, res) {
   }
 
   try {
+    const recepcionistaExistente = await Recepcionista.findOne({
+      where: { persona_id },
+    });
+    if (recepcionistaExistente) {
+      const especialidades = await Especialidad.findAll();
+      const persona = await Persona.findByPk(persona_id);
+      return res.status(400).render("Profesional/registro", {
+        error:
+          "Esta persona ya está registrada como recepcionista, por lo que no puede asignarse como profesional.",
+        values: {
+          persona_id,
+          matricula,
+          tipo,
+          especialidad,
+          nombre: persona.nombre,
+        },
+        persona: { id: persona_id, nombre: persona.nombre },
+        especialidades,
+      });
+    }
     const existe = await Profesional.findOne({ where: { matricula } });
     if (existe) {
       const especialidades = await Especialidad.findAll();

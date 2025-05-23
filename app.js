@@ -7,7 +7,7 @@ const models = require("./models/sequelize/index");
 console.log("Modelos y asociaciones cargados:", Object.keys(models));
 
 // Importar rutas
-
+const indexRouter = require("./routes/index");
 const personaRouter = require("./routes/Persona/personaRouter");
 const profesionalRouter = require("./routes/Persona/profesionalRouter");
 const medicoRouter = require("./routes/Persona/medicoRouter");
@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Rutas
-
+app.use("/", indexRouter);
 app.use("/persona", personaRouter);
 app.use("/profesional", profesionalRouter);
 app.use("/medico", medicoRouter);

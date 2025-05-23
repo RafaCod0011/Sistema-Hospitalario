@@ -58,6 +58,18 @@ nav.navbar .navbar-nav .nav-link i.bi {
   margin-right: 0.5rem;
 }
 
+/* Hover para emergencia */
+.navbar-nav .nav-link.emergencia-link:hover {
+  color: #ffffff !important;
+  background-color: #bb2d3b !important;
+}
+
+/* Active para emergencia */
+.navbar-nav .nav-link.emergencia-link.active {
+  background-color: #a71d2a !important;
+  color: #fff !important;
+}
+
 /* FONDO DEL CONTENIDO */
 
 .main-bg {
