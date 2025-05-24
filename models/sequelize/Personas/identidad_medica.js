@@ -9,9 +9,16 @@ const IdentidadMedica = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    persona_id: { type: DataTypes.INTEGER, allowNull: true },
+    persona_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      unique: "uniq_identidad_medica_persona_id",
+    },
     es_temporal: { type: DataTypes.BOOLEAN, defaultValue: true },
-    codigo_temp: DataTypes.STRING,
+    codigo_temp: {
+      type: DataTypes.STRING,
+      unique: "uniq_identidad_medica_codigo_temp",
+    },
     fecha_creacion: DataTypes.DATE,
   },
   {

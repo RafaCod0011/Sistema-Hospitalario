@@ -1,0 +1,90 @@
+extends ../layouts/main.pug
+
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/background/administrador.jpg');
+    }
+
+block content
+  h2.text-center.mb-4 Nueva Admisión
+  form(method="POST", action="/admisiones/crear")
+    
+    input(type="hidden", name="persona_id", value=persona ? persona.id : '')
+    
+    
+    .row.g-3
+      .col-md-6
+        label(for="nombre") Nombre Completo
+        input.form-control#nombre(
+          type="text",
+          name="nombre",
+          value=persona ? persona.nombre : '',
+          readonly)
+      .col-md-6
+        label(for="dni") DNI
+        input.form-control#dni(
+          type="text",
+          name="dni",
+          value=persona ? persona.dni : '',
+          readonly)
+      .col-md-6
+        label(for="fechaNacimiento") Fecha de Nacimiento
+        input.form-control#fechaNacimiento(
+          type="date",
+          name="fecha_nacimiento",
+          value=persona ? persona.fecha_nacimiento : '',
+          readonly)
+      .col-md-6
+        label(for="genero") Género
+        input.form-control#genero(
+          type="text",
+          name="genero",
+          value=persona ? persona.genero : '',
+          readonly)
+    
+    
+    .row.g-3.mt-4
+      .col-md-6
+        label(for="motivo_id") Motivo de Admisión
+        select.form-select#motivo_id(name="motivo_id", required)
+          // Opción por defecto: se marca como seleccionada si no hay valor en values.motivo_id
+          option(value="", disabled, selected=!values.motivo_id) Seleccione un motivo
+          each motivo in motivos
+            // Se marca la opción si el motivo coincide con el valor que vino en "values"
+            option(
+              value=motivo.motivo_id,
+              selected=(values && values.motivo_id == motivo.motivo_id)
+            )= motivo.descripcion
+
+      .col-md-6
+        label(for="contacto_emergencia") Contacto de Emergencia
+        input.form-control#contacto_emergencia(
+          type="text",
+          name="contacto_emergencia",
+          placeholder="Teléfono",
+          required)
+      .col-md-6
+        label(for="recepcionista_id") Recepcionista
+        select.form-select#recepcionista_id(name="recepcionista_id", required)
+          option(value="", disabled, selected=!values.recepcionista_id) Seleccione un recepcionista
+          each recepcionista in recepcionistas
+            option(
+              value=recepcionista.id,
+              selected=(values && values.recepcionista_id == recepcionista.id)
+            )= recepcionista.persona ? recepcionista.persona.nombre : ('Recepcionista ' + recepcionista.id)
+      .col-md-6
+        label(for="obra_social") Obra Social
+        select.form-select#obra_social(name="obra_social_id", required)
+          option(value="", disabled, selected=!values.obra_social_id) Seleccione una obra social
+          each obra in obrasSociales
+            option(
+              value=obra.id,
+              selected=(values && values.obra_social_id == obra.id)
+            )= obra.nombre
+    
+    .col-12.text-center.mt-3
+      button.btn.btn-primary.btn-lg(type="submit") Guardar Admisión
+      
+    if error
+      .alert.alert-danger.mt-3.text-center #{error}
