@@ -14,6 +14,9 @@ const Especialidad = require("./Personas/especialidad");
 const Admision = require("./Admisiones/admisiones");
 const AdmisionesMotivo = require("./Admisiones/admisiones_motivo");
 const Internacion = require("./Internacion/internaciones");
+const Cama = require("./Camas/camas");
+const Habitacion = require("./Camas/habitaciones");
+const Sala = require("./Camas/salas");
 
 // Asociaciones
 const models = {
@@ -30,6 +33,9 @@ const models = {
   Admision,
   AdmisionesMotivo,
   Internacion,
+  Sala,
+  Habitacion,
+  Cama,
 };
 
 // Ejecutar asociaciones
@@ -37,7 +43,6 @@ Object.values(models)
   .filter((model) => typeof model.associate === "function")
   .forEach((model) => model.associate(models));
 
-console.log("Asociaciones en Profesional:", Profesional.associations);
 console.log("Asociaciones en Persona:", Persona.associations);
 
 module.exports = { ...models };

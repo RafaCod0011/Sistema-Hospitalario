@@ -44,6 +44,10 @@ Internacion.associate = (models) => {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });
+  Internacion.belongsTo(models.Cama, {
+    foreignKey: "cama_id",
+    onDelete: "RESTRICT",
+  });
 };
 
 module.exports = Internacion;

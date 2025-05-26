@@ -1,0 +1,25 @@
+extends ../layouts/main.pug
+
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/background/administrador.jpg');
+    }
+
+block content
+  h2.text-center.mb-4 Asignar el paciente a una cama disponible.
+
+  form(method="POST", action=`/internacion/crear/${admision.id}`)
+    .mb-3
+      label.form-label Seleccionar Cama:
+      select.form-select(name="camaId", required)
+        option(value="") -- Seleccione --
+        each cama in camas
+          option(value=cama.id) Sala: #{cama.Habitacion.Sala.nombre} - Hab. #{cama.Habitacion.numero} - Cama #{cama.numero_en_habitacion}
+
+    .col-12.text-center.mt-3
+      button.btn.btn-primary(type="submit") Asignar Cama
+
+    if error
+      .alert.alert-danger.mt-3.text-center #{error}
+

@@ -57,6 +57,10 @@ Admision.associate = (models) => {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });
+  Admision.hasOne(models.Internacion, {
+    foreignKey: "admision_id",
+    onDelete: "RESTRICT",
+  });
 };
 
 module.exports = Admision;

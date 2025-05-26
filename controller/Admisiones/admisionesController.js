@@ -5,6 +5,9 @@ const IdentidadMedica = require("../../models/sequelize/Personas/identidad_medic
 const Paciente = require("../../models/sequelize/Pacientes/pacientes");
 const Recepcionista = require("../../models/sequelize/Personas/recepcionistas");
 const ObraSocial = require("../../models/sequelize/Pacientes/obra_social");
+const Cama = require("../../models/sequelize/Camas/camas");
+const Habitacion = require("../../models/sequelize/Camas/habitaciones");
+const Sala = require("../../models/sequelize/Camas/salas");
 
 async function buscar(req, res) {
   res.render("Admisiones/buscar");
@@ -224,7 +227,7 @@ async function crearAdmision(req, res) {
     }
 
     // Éxito: redirigir
-    return res.redirect(`/internacion/asignar-cama/${nuevaAdmision.id}`);
+    return res.redirect(`/Admisiones/asignar/${nuevaAdmision.id}`);
   } catch (error) {
     console.error("Error en crearAdmision:", error);
     // Renderizar de nuevo con datos completos y mensaje de error
@@ -245,9 +248,49 @@ async function crearAdmision(req, res) {
   }
 }
 
+async function mostrarAsignacionCama(req, res) {
+  const { admisionId } = req.params;
+
+  try {
+    const admision = await Admision.findByPk(admisionId);
+    const camasDisponibles = await Cama.findAll({
+      where: {
+        estado: "libre",
+        higienizada: true,
+      },
+      include: [
+        {
+          model: Habitacion,
+          include: [
+            {
+              model: Sala,
+              attributes: ["nombre"],
+            },
+          ],
+        },
+      ],
+    });
+
+    console.log(
+      "Camas disponibles:",
+      JSON.stringify(camasDisponibles, null, 2)
+    );
+
+    res.render("Admisiones/asignar", {
+      admision,
+      camas: camasDisponibles,
+      error: null,
+    });
+  } catch (error) {
+    console.error("Error al buscar camas:", error);
+    res.status(500).send("Error interno");
+  }
+}
+
 module.exports = {
   buscarPorDNI,
   nuevaAdmision,
   crearAdmision,
   buscar,
+  mostrarAsignacionCama,
 };
