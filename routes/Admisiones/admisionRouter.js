@@ -8,5 +8,6 @@ router.post("/buscar", admisionController.buscarPorDNI);
 router.get("/nueva/:persona_id", admisionController.nuevaAdmision);
 router.post("/crear", admisionController.crearAdmision);
 router.get("/asignar/:admisionId", admisionController.mostrarAsignacionCama);
+router.post("/cama/:admisionId", admisionController.asignarCama);
 
 module.exports = router;

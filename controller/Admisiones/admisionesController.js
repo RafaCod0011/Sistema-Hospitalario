@@ -5,9 +5,10 @@ const IdentidadMedica = require("../../models/sequelize/Personas/identidad_medic
 const Paciente = require("../../models/sequelize/Pacientes/pacientes");
 const Recepcionista = require("../../models/sequelize/Personas/recepcionistas");
 const ObraSocial = require("../../models/sequelize/Pacientes/obra_social");
-const Cama = require("../../models/sequelize/Camas/camas");
-const Habitacion = require("../../models/sequelize/Camas/habitaciones");
 const Sala = require("../../models/sequelize/Camas/salas");
+const Cama = require("../../models/sequelize/Camas/camas");
+const Internacion = require("../../models/sequelize/Internacion/internaciones");
+const sequelize = require("../../config/db");
 
 async function buscar(req, res) {
   res.render("Admisiones/buscar");
@@ -250,40 +251,68 @@ async function crearAdmision(req, res) {
 
 async function mostrarAsignacionCama(req, res) {
   const { admisionId } = req.params;
-
   try {
     const admision = await Admision.findByPk(admisionId);
-    const camasDisponibles = await Cama.findAll({
-      where: {
-        estado: "libre",
-        higienizada: true,
-      },
-      include: [
-        {
-          model: Habitacion,
-          include: [
-            {
-              model: Sala,
-              attributes: ["nombre"],
-            },
-          ],
-        },
-      ],
-    });
-
-    console.log(
-      "Camas disponibles:",
-      JSON.stringify(camasDisponibles, null, 2)
-    );
+    const salas = await Sala.findAll();
 
     res.render("Admisiones/asignar", {
       admision,
-      camas: camasDisponibles,
+      salas,
       error: null,
     });
   } catch (error) {
-    console.error("Error al buscar camas:", error);
-    res.status(500).send("Error interno");
+    console.error("Error al buscar salas:", error);
+    res.status(500).render("asignar-cama", {
+      error: "Error interno al cargar datos",
+      salas: [],
+    });
+  }
+}
+
+async function asignarCama(req, res) {
+  const { admisionId } = req.params;
+  const { camaId } = req.body;
+
+  const transaction = await sequelize.transaction();
+
+  try {
+    const cama = await Cama.findByPk(camaId, { transaction });
+
+    if (!cama || cama.estado !== "libre") {
+      await transaction.rollback();
+      const salas = await Sala.findAll();
+      return res.status(400).render("Admisiones/asignar", {
+        error: "Cama no disponible",
+        admision: { id: admisionId },
+        salas: salas,
+        camas: await Cama.findAll({ where: { estado: "libre" } }),
+      });
+    }
+
+    await cama.update({ estado: "ocupado" }, { transaction });
+
+    const internacion = await Internacion.create(
+      {
+        admision_id: admisionId,
+        cama_id: camaId,
+        fecha_ingreso: new Date(),
+      },
+      { transaction }
+    );
+
+    await transaction.commit();
+
+    res.redirect(`/Internaciones/internaciones/${internacion.id}`);
+  } catch (error) {
+    await transaction.rollback();
+    console.error("Error en asignación de cama:", error);
+    const salas = await Sala.findAll();
+    res.status(500).render("Admisiones/asignar", {
+      error: "Error al asignar cama",
+      salas: salas,
+      admision: { id: admisionId },
+      camas: await Cama.findAll({ where: { estado: "libre" } }),
+    });
   }
 }
 
@@ -293,4 +322,5 @@ module.exports = {
   crearAdmision,
   buscar,
   mostrarAsignacionCama,
+  asignarCama,
 };

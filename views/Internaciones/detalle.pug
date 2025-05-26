@@ -1,0 +1,118 @@
+extends ../layouts/main.pug
+
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/background/administrador.jpg');
+    }
+
+block content
+  .container.mt-4
+    .card
+      .card-header
+        h3 Detalles de la Internación
+      .card-body
+
+        .row.mb-4
+          .col-md-6
+            h5.mb-3 Información del Paciente
+            p
+              strong Nombre:
+              |  #{ persona.nombre || 'No registrado' }
+            p
+              strong DNI:
+              |  #{ persona.dni || 'Sin DNI' }
+            p
+              strong F. Nacimiento:
+              |  #{ personaFechaNacimientoFormateada || 'No especificada' }
+            p
+              strong Género:
+              |  #{ persona.genero || 'No registrado' }
+
+          .col-md-6
+            h5.mb-3 Datos Médicos
+            p
+              strong Obra Social:
+              |  #{ obra_social && obra_social.nombre || 'No asignada' }
+            p
+              strong Contacto Emergencia:
+              |  #{ contactoEmergencia || 'Sin contacto' }
+            
+        hr
+        .row.mb-4
+          .col-md-6
+            h5.mb-3 Detalles de la Admisión
+            p
+              strong Fecha Ingreso:
+              |  #{ fechaIngresoFormateada || 'N/A' }
+            p
+              strong Motivo:
+              |  #{ motivoDescripcion || 'No especificado' }
+
+          .col-md-6
+            h5.mb-3 Estado Actual
+            p
+              strong Estado:
+              span.badge(class= estado === 'Alta' ? 'bg-success' : 'bg-primary')
+              |  #{ estado }
+        hr
+        .row.mb-4
+          .col-md-12
+            h5.mb-3 Ubicación Asignada
+            .row
+              .col-md-4
+                p
+                  strong Sala:
+                  if sala
+                    |  #{ sala.nombre }
+                  else
+                    | No asignada
+                p
+                  strong Tipo Sala:
+                  if sala
+                    |  #{ sala.descripcion }
+                  else
+                    | N/A
+
+              .col-md-4
+                p
+                  strong Habitación:
+                  if habitacion
+                    |  #{ habitacion.numero }
+                  else
+                    | N/A
+                p
+                  strong Capacidad:
+                  if habitacion
+                    |  #{ habitacion.capacidad  }
+                  else
+                    | N/A
+
+              .col-md-4
+                p
+                  strong Cama:
+                  if cama
+                    |  #{ cama.numero_en_habitacion }
+                  else
+                    | N/A
+                p
+                  strong Higienizada:
+                  if cama
+                    |  #{ cama.higienizada ? 'Sí' : 'No' }
+                  else
+                    | N/A
+        hr
+        .row
+          .col-md-12
+            h5.mb-3 Datos de Admisión
+            p
+              strong Recepcionista:
+              |  #{ recepcionista || 'No identificado' }
+            p
+              strong Fecha Admisión:
+              |  #{ fechaAdmisionFormateada || 'N/A' }
+
+    .mt-4.d-flex.justify-content-center
+      a.btn.btn-primary(href='/admisiones/' + internacionId)
+        i.bi.bi-arrow-left
+        | Volver al listado

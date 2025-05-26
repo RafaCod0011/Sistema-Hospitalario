@@ -37,6 +37,10 @@ IdentidadMedica.associate = (models) => {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });
+  IdentidadMedica.belongsTo(models.Persona, {
+    foreignKey: "persona_id",
+    as: "persona",
+  });
 };
 
 module.exports = IdentidadMedica;

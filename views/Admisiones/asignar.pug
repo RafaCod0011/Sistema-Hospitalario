@@ -6,16 +6,84 @@ block style
       background-image: url('/img/background/administrador.jpg');
     }
 
+block scripts
+  script.
+    document.addEventListener('DOMContentLoaded', () => {
+      const salaSelect = document.getElementById('select-sala');
+      const habitacionSelect = document.getElementById('select-habitacion');
+      const camaSelect = document.getElementById('select-cama');
+
+      salaSelect.addEventListener('change', async (e) => {
+        const salaId = e.target.value;
+        if (!salaId) return;
+
+        try {
+          const response = await fetch(`/api/habitaciones?salaId=${salaId}`);
+          const habitaciones = await response.json();
+
+          habitacionSelect.innerHTML = '<option value="">-- Seleccione Habitación --</option>';
+          habitaciones.forEach((habitacion) => {
+            const option = document.createElement('option');
+            option.value = habitacion.id;
+            option.textContent = `Habitación ${habitacion.numero} (Capacidad: ${habitacion.capacidad})`;
+            habitacionSelect.appendChild(option);
+          });
+
+          habitacionSelect.disabled = false;
+          camaSelect.disabled = true;
+          camaSelect.innerHTML = '<option value="">-- Seleccione Habitación --</option>';
+
+        } catch (error) {
+          console.error('Error al cargar habitaciones:', error);
+        }
+      });
+
+      habitacionSelect.addEventListener('change', async (e) => {
+        const habitacionId = e.target.value;
+        if (!habitacionId) return;
+
+        try {
+          const response = await fetch(`/api/camas?habitacionId=${habitacionId}`);
+          const camas = await response.json();
+
+          camaSelect.innerHTML = '<option value="">-- Seleccione Cama --</option>';
+          camas.forEach((cama) => {
+            const option = document.createElement('option');
+            option.value = cama.id;
+            option.textContent = `Cama ${cama.numero_en_habitacion} - ${cama.estado}`;
+            option.disabled = cama.estado !== 'libre' || !cama.higienizada;
+            camaSelect.appendChild(option);
+          });
+
+          camaSelect.disabled = false;
+
+        } catch (error) {
+          console.error('Error al cargar camas:', error);
+        }
+      });
+    });
+
 block content
   h2.text-center.mb-4 Asignar el paciente a una cama disponible.
 
-  form(method="POST", action=`/internacion/crear/${admision.id}`)
-    .mb-3
-      label.form-label Seleccionar Cama:
-      select.form-select(name="camaId", required)
-        option(value="") -- Seleccione --
-        each cama in camas
-          option(value=cama.id) Sala: #{cama.Habitacion.Sala.nombre} - Hab. #{cama.Habitacion.numero} - Cama #{cama.numero_en_habitacion}
+  form(method="POST", action=`/admisiones/cama/${admision.id}`)
+    .row.g-3.mb-4
+      .col-md-4
+        label.form-label Seleccionar Sala:
+        select.form-select#select-sala(name="salaId")
+          option(value="") -- Seleccione Sala --
+          each sala in salas
+            option(value=sala.id)= sala.nombre
+    
+      .col-md-4
+        label.form-label Seleccionar Habitación:
+        select.form-select#select-habitacion(name="habitacionId", disabled)
+          option(value="") -- Primero seleccione Sala --
+    
+      .col-md-4
+        label.form-label Seleccionar Cama:
+        select.form-select#select-cama(name="camaId", disabled, required)
+          option(value="") -- Primero seleccione Habitación --
 
     .col-12.text-center.mt-3
       button.btn.btn-primary(type="submit") Asignar Cama
