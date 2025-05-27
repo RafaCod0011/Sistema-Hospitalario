@@ -10,7 +10,7 @@ const Personas = sequelize.define(
     fecha_nacimiento: {
       type: DataTypes.DATEONLY,
       field: "fecha_nacimiento",
-      allowNull: false,
+      allowNull: true,
       get() {
         return this.getDataValue("fecha_nacimiento");
       },

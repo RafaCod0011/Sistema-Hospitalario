@@ -302,7 +302,7 @@ async function asignarCama(req, res) {
 
     await transaction.commit();
 
-    res.redirect(`/Internaciones/internaciones/${internacion.id}`);
+    res.redirect(`/internaciones/${internacion.id}`);
   } catch (error) {
     await transaction.rollback();
     console.error("Error en asignación de cama:", error);

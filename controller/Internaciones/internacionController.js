@@ -107,9 +107,9 @@ async function mostrarInternacion(req, res) {
           "es-AR"
         )
       : null;
-    const personaFechaNacimientoFormateada = new Date(
-      persona.fecha_nacimiento
-    ).toLocaleDateString("es-AR");
+    const personaFechaNacimientoFormateada = persona.fecha_nacimiento
+      ? new Date(persona.fecha_nacimiento).toLocaleDateString("es-AR")
+      : null;
 
     res.render("Internaciones/detalle", {
       persona,
