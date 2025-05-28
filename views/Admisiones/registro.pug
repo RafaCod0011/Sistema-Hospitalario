@@ -11,6 +11,8 @@ block content
   form(method="POST", action="/admisiones/crear")
     
     input(type="hidden", name="persona_id", value=persona ? persona.id : '')
+    if internacionId
+      input(type="hidden", name="internacionId", value=internacionId)
     
     
     .row.g-3

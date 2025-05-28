@@ -1,0 +1,12 @@
+extends ../layouts/main.pug
+
+block content
+  .container.mt-4
+    h3 Buscar Persona por DNI
+    form(method="POST", action="/persona/buscar")
+      if internacionId
+        input(type="hidden", name="internacionId", value=internacionId)
+      .mb-3
+        label.form-label(for="dni") DNI
+        input.form-control#dni(type="text", name="dni", required)
+      button.btn.btn-primary(type="submit") Buscar

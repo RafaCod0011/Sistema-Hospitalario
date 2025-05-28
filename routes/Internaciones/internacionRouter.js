@@ -3,5 +3,7 @@ const router = express.Router();
 const internacionController = require("../../controller/Internaciones/internacionController");
 
 router.get("/:id", internacionController.mostrarInternacion);
+router.get("/", internacionController.listarInternaciones);
+router.post("/:id/identificar", internacionController.identificarPaciente);
 
 module.exports = router;

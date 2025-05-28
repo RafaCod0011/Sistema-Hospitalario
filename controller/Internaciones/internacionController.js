@@ -111,6 +111,8 @@ async function mostrarInternacion(req, res) {
       ? new Date(persona.fecha_nacimiento).toLocaleDateString("es-AR")
       : null;
 
+    const esTemporal = internacion.admision.identidad_medica.es_temporal;
+
     res.render("Internaciones/detalle", {
       persona,
       obra_social,
@@ -125,6 +127,9 @@ async function mostrarInternacion(req, res) {
       motivoDescripcion,
       estado,
       internacionId,
+      esTemporal,
+      successMsg: req.query.msg,
+      errorMsg: req.query.err,
     });
   } catch (error) {
     console.error("Error al cargar internación:", error);
@@ -133,7 +138,78 @@ async function mostrarInternacion(req, res) {
     });
   }
 }
+async function listarInternaciones(req, res) {
+  try {
+    const registros = await Internacion.findAll({
+      include: [
+        {
+          model: Admision,
+          as: "admision",
+          include: [
+            {
+              model: AdmisionMotivo,
+              as: "motivo",
+              attributes: ["descripcion"],
+            },
+          ],
+          attributes: ["fecha_admision"],
+        },
+        {
+          model: Cama,
+          as: "Cama",
+          include: [
+            {
+              model: Habitacion,
+              as: "Habitacion",
+              include: [
+                {
+                  model: Sala,
+                  as: "Sala",
+                  attributes: ["nombre"],
+                },
+              ],
+              attributes: ["numero"],
+            },
+          ],
+          attributes: ["numero_en_habitacion"],
+        },
+      ],
+      order: [["fecha_ingreso", "DESC"]],
+    });
+    const internaciones = registros.map((i) => {
+      const fechaIngreso = i.fecha_ingreso
+        ? new Date(i.fecha_ingreso).toLocaleDateString("es-AR")
+        : "N/A";
+      const fechaAdmision = i.admision.fecha_admision
+        ? new Date(i.admision.fecha_admision).toLocaleDateString("es-AR")
+        : "N/A";
+      const camaNum = i.Cama?.numero_en_habitacion ?? "N/A";
+      const habitacionNombre = i.Cama?.Habitacion?.numero ?? "N/A";
+      const salaNombre = i.Cama?.Habitacion?.Sala?.nombre ?? "N/A";
+      const estado = i.estado ?? "En curso";
+      const motivo = i.admision.motivo?.descripcion ?? "No especificado";
+
+      return {
+        id: i.id,
+        fechaIngreso,
+        numeroCama: camaNum,
+        habitacionNombre,
+        salaNombre,
+        estado,
+        fechaAdmision,
+        motivo,
+      };
+    });
+    res.render("Internaciones/listado", { internaciones });
+  } catch (err) {
+    console.error("Error al listar internaciones:", err);
+    res
+      .status(500)
+      .render("error", { error: "No se pudo listar internaciones" });
+  }
+}
 
 module.exports = {
   mostrarInternacion,
+  listarInternaciones,
 };

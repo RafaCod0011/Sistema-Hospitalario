@@ -1,4 +1,7 @@
 const Persona = require("../../models/sequelize/Personas/personas");
+const Internacion = require("../../models/sequelize/Internacion/internaciones");
+const Admision = require("../../models/sequelize/Admisiones/admisiones");
+const IdentidadMedica = require("../../models/sequelize/Personas/identidad_medica");
 
 function validarPersona(persona, res) {
   const regex = {
@@ -180,6 +183,7 @@ async function formularioEditar(req, res) {
     res.redirect("/persona/listar");
   }
 }
+
 module.exports = {
   crear,
   listar,

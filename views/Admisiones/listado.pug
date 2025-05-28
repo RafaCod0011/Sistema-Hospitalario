@@ -1,0 +1,75 @@
+extends ../layouts/main.pug
+
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/background/administrador.jpg');
+    }
+
+block content
+  .container.mt-4
+    h2.mb-4 Listado de Admisiones
+    
+    table.table.table-striped.table-hover
+      thead.table-dark
+        tr
+          th Fecha
+          th Paciente
+          th DNI
+          th Recepcionista
+          th Motivo
+          th Estado
+          th Acciones
+      tbody
+        each admision in admisiones
+          tr
+            td= admision.fecha
+            td= admision.paciente
+            td= admision.dni
+            td= admision.recepcionista
+            td= admision.motivo
+            td
+              span.badge(class=admision.estado === 'Activa' ? 'bg-success' : 'bg-secondary')
+                | #{admision.estado}
+            td
+              button.btn.btn-danger.btn-sm(type="button" onclick=`confirmarEliminacion(this, '${admision.id}')`)
+                i.bi.bi-trash
+                | Eliminar
+
+block scripts
+  script.
+    function confirmarEliminacion(btn, admisionId) {
+      Swal.fire({
+        title: '¿Eliminar admisión?',
+        text: "Esta acción no se puede deshacer",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/admisiones/${admisionId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+              if(data.success) {
+                  // Removemos la fila correspondiente del DOM
+                  const fila = btn.closest('tr');
+                  fila.remove();
+                  Swal.fire('Eliminado', data.message, 'success');
+              } else {
+                  Swal.fire('Error', data.error, 'error');
+              }
+          })
+          .catch(error => {
+              Swal.fire('Error', 'No se pudo eliminar la admisión', 'error');
+          });
+        }
+      });
+    }

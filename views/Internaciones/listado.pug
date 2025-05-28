@@ -1,0 +1,38 @@
+extends ../layouts/main.pug
+
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/background/administrador.jpg');
+    }
+    
+block content
+  .container.mt-4
+    h3.mb-4 Listado de Internaciones
+    if internaciones.length
+      table.table.table-striped
+        thead
+          tr
+            th Fecha Ingreso
+            th Número Cama
+            th Habitación
+            th Sala
+            th Estado
+            th Fecha Admisión
+            th Motivo
+            th Acciones
+        tbody
+          each item in internaciones
+            tr
+              td #{ item.fechaIngreso }
+              td #{ item.numeroCama }
+              td #{ item.habitacionNombre }
+              td #{ item.salaNombre }
+              td
+                span.badge(class= item.estado === 'Alta' ? 'bg-success' : 'bg-primary') #{ item.estado }
+              td #{ item.fechaAdmision }
+              td #{ item.motivo }
+              td
+                a.btn.btn-sm.btn-outline-primary(href=`/internaciones/${item.id}`) Ver
+    else
+      .alert.alert-info No hay internaciones registradas.

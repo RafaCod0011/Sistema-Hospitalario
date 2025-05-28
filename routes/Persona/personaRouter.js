@@ -9,5 +9,4 @@ router.get("/editar/:id", personaController.formularioEditar);
 router.post("/editar/:id", personaController.actualizar);
 
 router.get("/listar", personaController.listar);
-
 module.exports = router;

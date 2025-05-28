@@ -112,7 +112,14 @@ block content
               strong Fecha Admisión:
               |  #{ fechaAdmisionFormateada || 'N/A' }
 
+    if esTemporal
+      .row.mb-4
+        .col-md-12.text-center
+          a.btn.btn-warning(href=`/emergencias/${internacionId}/actualizar-datos`)
+            i.bi.bi-pencil-square
+            | Actualizar datos
+
     .mt-4.d-flex.justify-content-center
-      a.btn.btn-primary(href='/admisiones/' + internacionId)
+      a.btn.btn-primary(href="/internaciones")
         i.bi.bi-arrow-left
         | Volver al listado

@@ -9,15 +9,14 @@ const Cama = require("../../models/sequelize/Camas/camas");
 const Habitacion = require("../../models/sequelize/Camas/habitaciones");
 const sequelize = require("../../config/db");
 
-async function generarCodigoTemp() {
-  const count = await IdentidadMedica.count({ where: { es_temporal: true } });
-  return `TEMP-${String(count + 1).padStart(4, "0")}`;
+function generarCodigoTemporal() {
+  return "TEMP-" + Math.random().toString(36).substr(2, 9).toUpperCase();
 }
 async function registrarEmergencia(req, res) {
   try {
     const { internacion } = await sequelize.transaction(async (t) => {
       // 1.Crear identidad médica temporal
-      const codigo = await generarCodigoTemp();
+      const codigo = await generarCodigoTemporal();
       const identidad = await IdentidadMedica.create(
         { codigo_temp: codigo, fecha_creacion: new Date() },
         { transaction: t }
@@ -97,6 +96,6 @@ async function registrarEmergencia(req, res) {
   }
 }
 module.exports = {
-  generarCodigoTemp,
+  generarCodigoTemporal,
   registrarEmergencia,
 };

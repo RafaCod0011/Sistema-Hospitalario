@@ -59,6 +59,7 @@ function validarAdmision({
 
 async function nuevaAdmision(req, res) {
   const { persona_id } = req.params;
+  const internacionId = req.query.internacion || null;
   try {
     const persona = await Persona.findByPk(persona_id);
     if (!persona) {
@@ -106,6 +107,7 @@ async function nuevaAdmision(req, res) {
       recepcionistas,
       obrasSociales,
       values: { persona_id },
+      internacionId,
     });
   } catch (err) {
     console.error("Error al mostrar formulario de admisión:", err);
@@ -315,6 +317,99 @@ async function asignarCama(req, res) {
     });
   }
 }
+async function listarAdmisiones(req, res) {
+  try {
+    const admisiones = await Admision.findAll({
+      include: [
+        {
+          model: IdentidadMedica,
+          as: "identidad_medica",
+          include: [
+            {
+              model: Paciente,
+              as: "paciente",
+              include: [
+                {
+                  model: ObraSocial,
+                  as: "obra_social",
+                  attributes: ["nombre"],
+                },
+              ],
+            },
+            {
+              model: Persona,
+              as: "persona",
+              attributes: ["nombre", "dni", "fecha_nacimiento", "genero"],
+            },
+          ],
+        },
+        {
+          model: Recepcionista,
+          as: "recepcionista",
+          include: [
+            {
+              model: Persona,
+              as: "persona",
+              attributes: ["nombre"],
+            },
+          ],
+        },
+        {
+          model: AdmisionesMotivo,
+          as: "motivo",
+          attributes: ["descripcion"],
+        },
+      ],
+    });
+
+    const formattedAdmisiones = admisiones.map((admision) => {
+      const fechaAdmision = admision.fecha_admision
+        ? new Date(admision.fecha_admision).toLocaleDateString("es-AR")
+        : "N/A";
+
+      return {
+        id: admision.id,
+        fecha: fechaAdmision,
+        paciente:
+          admision.identidad_medica?.persona?.nombre || "No identificado",
+        dni: admision.identidad_medica?.persona?.dni || "N/A",
+        recepcionista: admision.recepcionista?.persona?.nombre || "No asignado",
+        motivo: admision.motivo?.descripcion || "No especificado",
+        estado: admision.estado || "Activa",
+      };
+    });
+
+    res.render("Admisiones/listado", { admisiones: formattedAdmisiones });
+  } catch (error) {
+    console.error("Error al listar admisiones:", error);
+    res.status(500).render("error", {
+      error: "Error al cargar el listado de admisiones",
+    });
+  }
+}
+async function eliminarAdmision(req, res) {
+  const { id } = req.params;
+  try {
+    const admision = await Admision.findByPk(id);
+    if (!admision) {
+      return res.status(404).json({
+        success: false,
+        error: "Admisión no encontrada",
+      });
+    }
+    await admision.destroy();
+    res.json({
+      success: true,
+      message: "Admisión eliminada correctamente",
+    });
+  } catch (error) {
+    console.error("Error al eliminar admisión:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error interno al eliminar la admisión",
+    });
+  }
+}
 
 module.exports = {
   buscarPorDNI,
@@ -323,4 +418,6 @@ module.exports = {
   buscar,
   mostrarAsignacionCama,
   asignarCama,
+  listarAdmisiones,
+  eliminarAdmision,
 };
