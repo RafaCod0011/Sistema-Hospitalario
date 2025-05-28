@@ -1,7 +1,4 @@
 const Persona = require("../../models/sequelize/Personas/personas");
-const Internacion = require("../../models/sequelize/Internacion/internaciones");
-const Admision = require("../../models/sequelize/Admisiones/admisiones");
-const IdentidadMedica = require("../../models/sequelize/Personas/identidad_medica");
 
 function validarPersona(persona, res) {
   const regex = {
@@ -64,7 +61,10 @@ function validarPersona(persona, res) {
 
   return null;
 }
-
+function capitalize(str) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
 async function crear(req, res) {
   const persona = req.body;
 
@@ -86,7 +86,7 @@ async function crear(req, res) {
         values: persona,
       });
     }
-
+    persona.genero = capitalize(persona.genero);
     // Crear la persona
     await Persona.create({
       ...persona,
@@ -183,11 +183,28 @@ async function formularioEditar(req, res) {
     res.redirect("/persona/listar");
   }
 }
-
+async function buscarPorDNI(req, res) {
+  const { dni } = req.query;
+  console.log("Buscando DNI:", dni);
+  try {
+    const persona = await Persona.findOne({
+      where: { dni, es_temporal: false },
+    });
+    if (persona) {
+      return res.json({ found: true, persona });
+    } else {
+      return res.json({ found: false });
+    }
+  } catch (error) {
+    console.error("Error buscando persona por DNI:", error);
+    return res.status(500).json({ found: false, error: "Error interno" });
+  }
+}
 module.exports = {
   crear,
   listar,
   formulario,
   actualizar,
   formularioEditar,
+  buscarPorDNI,
 };

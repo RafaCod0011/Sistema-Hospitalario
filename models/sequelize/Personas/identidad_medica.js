@@ -9,6 +9,10 @@ const IdentidadMedica = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    paciente_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     persona_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -31,8 +35,8 @@ const IdentidadMedica = sequelize.define(
 );
 
 IdentidadMedica.associate = (models) => {
-  IdentidadMedica.hasOne(models.Paciente, {
-    foreignKey: "identidad_medica_id",
+  IdentidadMedica.belongsTo(models.Paciente, {
+    foreignKey: "paciente_id",
     as: "paciente",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",

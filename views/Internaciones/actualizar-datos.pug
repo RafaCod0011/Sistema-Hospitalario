@@ -1,1 +1,139 @@
+extends ../layouts/main.pug
 
+block style
+  style.
+    .main-bg {
+      background-image: url('/img/background/administrador.jpg');
+    }
+block content
+  .container.mt-4
+    h2 Actualizar Datos de Emergencia
+    form(method="POST", action=`/emergencias/${internacionId}/actualizar-datos`)
+      br
+      h4 Datos de Persona
+      .row.g-3
+        .col-md-6
+          label(for="dni") DNI:
+          input.form-control(type="text", name="dni", id="dni", required, value=persona.dni || '')
+          button#buscarDNI.btn.btn-info(type="button") Buscar
+        .col-md-6
+          label(for="nombre") Nombre:
+          input.form-control(type="text", name="nombre", id="nombre", required, value=persona.nombre || '', readonly)
+      .row.g-3
+        .col-md-6
+          label(for="fecha_nacimiento") Fecha de Nacimiento:
+          input.form-control(
+            type="date", 
+            name="fecha_nacimiento", 
+            id="fecha_nacimiento", 
+            required, 
+            value=persona.fecha_nacimiento ? new Date(persona.fecha_nacimiento).toISOString().substring(0,10) : '',
+            readonly
+          )
+        .col-md-6
+          label(for="genero") Género:
+          select.form-control(name="genero", id="genero", disabled)
+            option(value="M", selected=persona.genero==='M') Masculino
+            option(value="F", selected=persona.genero==='F') Femenino
+            option(value="O", selected=persona.genero==='O') Otro
+      .row.g-3
+        .col-md-6
+          label(for="telefono") Teléfono:
+          input.form-control(type="text", name="telefono", id="telefono", required, value=persona.telefono || '', readonly)
+        .col-md-6
+          label(for="direccion") Dirección:
+          input.form-control(type="text", name="direccion", id="direccion", required, value=persona.direccion || '', readonly)
+      .row.g-3
+        .col-md-6
+          label(for="email") Email:
+          input.form-control(type="email", name="email", id="email", required, value=persona.email || '', readonly)
+        .col-md-6
+          label(for="confirm_email") Confirmar Email:
+          input.form-control(type="email", name="confirm_email", id="confirm_email", required, value=persona.email || '', readonly)
+      br
+      h4 Datos de Paciente
+      .row.g-3
+        .col-md-6
+          label(for="contacto_emergencia") Contacto de Emergencia:
+          input.form-control(type="text", name="contacto_emergencia", id="contacto_emergencia", required, value=paciente ? paciente.contacto_emergencia : '')
+        .col-md-6
+          label(for="obra_social_id") Obra Social:
+          select.form-control(name="obra_social_id", id="obra_social_id")
+            each os in obrasSociales
+              option(value=os.id, selected=(paciente && paciente.obra_social_id == os.id) ? true : false)= os.nombre
+      br
+      h4 Datos de Admisión
+      .row.g-3
+        .col-md-6
+          label(for="recepcionista_id") Recepcionista:
+          select.form-control(name="recepcionista_id", id="recepcionista_id")
+            each rec in recepcionistas
+              option(value=rec.id, selected=(internacion.admision && internacion.admision.recepcionista_id == rec.id) ? true : false)= rec.persona.nombre
+        .col-md-6
+          label(for="motivo_id") Motivo:
+          select.form-control(name="motivo_id", id="motivo_id")
+            each mod in motivos
+              option(value=mod.motivo_id, selected=(internacion.admision && internacion.admision.motivo_id == mod.motivo_id) ? true : false)= mod.descripcion
+      br
+      button.btn.btn-primary.w-100.mx-auto.d-block(type="submit") Actualizar Datos
+    a.btn.btn-secondary.w-100.mx-auto.d-block.mt-3(href=`/internaciones/${internacionId}`) Volver al detalle
+
+block scripts
+  script.
+    console.log("Script de búsqueda DNI ejecutado");
+    document.getElementById('buscarDNI').addEventListener('click', function() {
+      const dniValue = document.getElementById('dni').value.trim();
+      if (!dniValue) {
+        alert("Por favor ingresa un DNI.");
+        return;
+      }
+      fetch(`/persona/buscar?dni=${dniValue}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.found) {
+            const persona = data.persona;
+            document.getElementById('nombre').value = persona.nombre;
+            document.getElementById('fecha_nacimiento').value = persona.fecha_nacimiento 
+              ? new Date(persona.fecha_nacimiento).toISOString().substring(0,10)
+              : '';
+
+            document.getElementById('genero').value = persona.genero;
+            
+            document.getElementById('telefono').value = persona.telefono || '';
+            document.getElementById('direccion').value = persona.direccion || '';
+            document.getElementById('email').value = persona.email || '';
+            document.getElementById('confirm_email').value = persona.email || '';
+            
+            // Marcar los campos que no se deben editar
+            document.getElementById('nombre').setAttribute('readonly', true);
+            document.getElementById('fecha_nacimiento').setAttribute('readonly', true);
+            document.getElementById('genero').setAttribute('disabled', true);
+            document.getElementById('telefono').setAttribute('readonly', true);
+            document.getElementById('direccion').setAttribute('readonly', true);
+            document.getElementById('email').setAttribute('readonly', true);
+            document.getElementById('confirm_email').setAttribute('readonly', true);
+          } else {
+            alert("No existe una persona definitiva con ese DNI. Completa el resto de los datos.");
+            // Remover el atributo readonly para permitir edición
+            document.getElementById('nombre').removeAttribute('readonly');
+            document.getElementById('fecha_nacimiento').removeAttribute('readonly');
+            document.getElementById('genero').removeAttribute('disabled');
+            document.getElementById('telefono').removeAttribute('readonly');
+            document.getElementById('direccion').removeAttribute('readonly');
+            document.getElementById('email').removeAttribute('readonly');
+            document.getElementById('confirm_email').removeAttribute('readonly');
+            // Limpiar campos
+            document.getElementById('nombre').value = '';
+            document.getElementById('fecha_nacimiento').value = '';
+            document.getElementById('genero').value = '';
+            document.getElementById('telefono').value = '';
+            document.getElementById('direccion').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('confirm_email').value = '';
+          }
+        })
+        .catch(err => {
+          console.error("Error en la búsqueda por DNI:", err);
+          alert("Error al buscar la persona. Intenta de nuevo.");
+        });
+    });

@@ -9,7 +9,6 @@ const Paciente = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    identidad_medica_id: { type: DataTypes.INTEGER, allowNull: false },
     obra_social_id: { type: DataTypes.INTEGER, allowNull: true },
     contacto_emergencia: DataTypes.STRING,
   },
@@ -30,9 +29,9 @@ Paciente.associate = (models) => {
     onUpdate: "CASCADE",
   });
 
-  Paciente.belongsTo(models.IdentidadMedica, {
-    foreignKey: "identidad_medica_id",
-    as: "identidad_medica",
+  Paciente.hasMany(models.IdentidadMedica, {
+    foreignKey: "paciente_id",
+    as: "identidades_medicas",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });

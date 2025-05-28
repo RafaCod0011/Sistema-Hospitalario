@@ -38,9 +38,9 @@ block content
         label(for="genero") Género
         select.form-select#genero(name="genero" required)
           option(value="" disabled selected=!(values && values.genero)) Género
-          option(value="masculino" selected=(values && values.genero === 'masculino')) Masculino
-          option(value="femenino" selected=(values && values.genero === 'femenino')) Femenino
-          option(value="otro" selected=(values && values.genero === 'otro')) Otro
+          option(value="masculino" selected=(values && values.genero === 'Masculino')) Masculino
+          option(value="femenino" selected=(values && values.genero === 'Femenino')) Femenino
+          option(value="otro" selected=(values && values.genero === 'Otro')) Otro
 
       // Teléfono - Dirección
       .col-md-6

@@ -7,6 +7,6 @@ router.post("/nuevo", personaController.crear);
 
 router.get("/editar/:id", personaController.formularioEditar);
 router.post("/editar/:id", personaController.actualizar);
-
+router.get("/buscar", personaController.buscarPorDNI);
 router.get("/listar", personaController.listar);
 module.exports = router;

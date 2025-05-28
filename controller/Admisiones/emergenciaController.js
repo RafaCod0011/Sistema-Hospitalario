@@ -7,6 +7,8 @@ const Sala = require("../../models/sequelize/Camas/salas");
 const Internacion = require("../../models/sequelize/Internacion/internaciones");
 const Cama = require("../../models/sequelize/Camas/camas");
 const Habitacion = require("../../models/sequelize/Camas/habitaciones");
+const AdmisionMotivo = require("../../models/sequelize/Admisiones/admisiones_motivo");
+const ObraSocial = require("../../models/sequelize/Pacientes/obra_social");
 const sequelize = require("../../config/db");
 
 function generarCodigoTemporal() {
@@ -15,12 +17,13 @@ function generarCodigoTemporal() {
 async function registrarEmergencia(req, res) {
   try {
     const { internacion } = await sequelize.transaction(async (t) => {
-      // 1.Crear identidad médica temporal
+      // 1. Crear identidad médica temporal
       const codigo = await generarCodigoTemporal();
       const identidad = await IdentidadMedica.create(
         { codigo_temp: codigo, fecha_creacion: new Date() },
         { transaction: t }
       );
+
       // 2. Crear persona temporal
       const persona = await Persona.create(
         { es_temporal: true, observaciones: "Ingreso emergencia sin datos" },
@@ -30,11 +33,9 @@ async function registrarEmergencia(req, res) {
       await identidad.save({ transaction: t });
 
       // 3. Registrar o asegurar paciente
-      await Paciente.findOrCreate({
-        where: { identidad_medica_id: identidad.id },
-        defaults: { identidad_medica_id: identidad.id },
-        transaction: t,
-      });
+      const paciente = await Paciente.create({}, { transaction: t });
+      identidad.paciente_id = paciente.id;
+      await identidad.save({ transaction: t });
 
       // 4. Elegir un recepcionista cualquiera
       const recepcionista = await Recepcionista.findOne({ transaction: t });
@@ -61,7 +62,7 @@ async function registrarEmergencia(req, res) {
       });
       if (!salaEmergencias) throw new Error("Sala 'Emergencias' no existe");
 
-      // 2) Busca cualquier cama libre en cualquier habitación de esa sala
+      // 8. Buscar cualquier cama libre en cualquier habitación de esa sala
       const cama = await Cama.findOne({
         include: [
           {
@@ -74,7 +75,7 @@ async function registrarEmergencia(req, res) {
       });
       if (!cama) throw new Error("No hay camas libres en Emergencias");
 
-      // 8. Crear la internación y marcar cama ocupada
+      // 9. Crear la internación y marcar la cama como ocupada
       const nuevaInternacion = await Internacion.create(
         {
           admision_id: admision.id,
@@ -95,7 +96,241 @@ async function registrarEmergencia(req, res) {
     return res.status(500).json({ error: err.message });
   }
 }
+
+async function mostrarActualizarDatos(req, res) {
+  const { internacionId } = req.params;
+  try {
+    const internacion = await Internacion.findByPk(internacionId, {
+      include: [
+        {
+          model: Admision,
+          as: "admision",
+          include: [
+            {
+              model: IdentidadMedica,
+              as: "identidad_medica",
+              include: [
+                {
+                  model: Persona,
+                  as: "persona",
+                  attributes: [
+                    "id",
+                    "dni",
+                    "nombre",
+                    "fecha_nacimiento",
+                    "genero",
+                    "es_temporal",
+                    "telefono",
+                    "direccion",
+                    "email",
+                  ],
+                },
+                {
+                  model: Paciente,
+                  as: "paciente",
+                  attributes: ["id", "contacto_emergencia", "obra_social_id"],
+                  include: [
+                    {
+                      model: ObraSocial,
+                      as: "obra_social",
+                      attributes: ["id", "nombre"],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!internacion) {
+      return res
+        .status(404)
+        .render("error", { error: "Internación no encontrada" });
+    }
+
+    const persona = internacion.admision.identidad_medica.persona;
+    const paciente = internacion.admision.identidad_medica.paciente;
+
+    // Obtener la lista de recepcionistas
+    const recepcionistas = await Recepcionista.findAll({
+      include: [
+        { model: Persona, as: "persona", attributes: ["id", "nombre"] },
+      ],
+    });
+
+    // Obtener la lista de motivos de admisión
+    const motivos = await AdmisionMotivo.findAll({
+      attributes: ["motivo_id", "descripcion"],
+    });
+
+    // Obtener la lista de obras sociales
+
+    const obrasSociales = await ObraSocial.findAll({
+      attributes: ["id", "nombre"],
+    });
+
+    res.render("Internaciones/actualizar-datos", {
+      internacionId,
+      persona,
+      paciente,
+      recepcionistas,
+      motivos,
+      obrasSociales,
+      internacion,
+    });
+  } catch (error) {
+    console.error("Error al cargar datos para actualización:", error);
+    res
+      .status(500)
+      .render("error", { error: "Error al cargar datos para actualizar" });
+  }
+}
+
+async function actualizarDatosEmergencia(req, res) {
+  const { internacionId } = req.params;
+  const {
+    dni,
+    nombre,
+    fecha_nacimiento,
+    genero,
+    telefono,
+    direccion,
+    email,
+    confirm_email,
+    recepcionista_id,
+    motivo_id,
+    contacto_emergencia,
+    obra_social_id,
+  } = req.body;
+
+  // ARMAR LAS VALIDACIONES DE FORMULARIO
+  // Validar que email y confirmar email coinciden
+  if (email !== confirm_email) {
+    return res.redirect(
+      `/internaciones/${internacionId}?err=${encodeURIComponent(
+        "El email y confirmar email deben coincidir"
+      )}`
+    );
+  }
+
+  const t = await sequelize.transaction();
+  try {
+    const internacion = await Internacion.findByPk(internacionId, {
+      include: [
+        {
+          model: Admision,
+          as: "admision",
+          include: [
+            {
+              model: IdentidadMedica,
+              as: "identidad_medica",
+              include: [
+                {
+                  model: Persona,
+                  as: "persona",
+                  attributes: [
+                    "id",
+                    "dni",
+                    "nombre",
+                    "fecha_nacimiento",
+                    "genero",
+                    "es_temporal",
+                    "telefono",
+                    "direccion",
+                    "email",
+                  ],
+                },
+                {
+                  model: Paciente,
+                  as: "paciente",
+                  attributes: ["id", "contacto_emergencia", "obra_social_id"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      transaction: t,
+    });
+    if (!internacion) throw new Error("Internación no encontrada");
+
+    const identidad = internacion.admision.identidad_medica;
+    if (!identidad) throw new Error("Identidad médica no encontrada");
+
+    const personaActual = identidad.persona;
+    if (!personaActual) throw new Error("No se encontró la persona asociada");
+
+    // Buscar si existe ya una persona definitiva con ese DNI
+    const personaExistente = await Persona.findOne({
+      where: { dni, es_temporal: false },
+      transaction: t,
+    });
+
+    if (personaExistente) {
+      // Vincular la identidad a la persona definitiva
+      identidad.persona_id = personaExistente.id;
+      await identidad.save({ transaction: t });
+
+      // Si la persona asociada era la temporal, eliminarla
+      if (personaActual.id !== personaExistente.id) {
+        await Persona.destroy({
+          where: { id: personaActual.id },
+          transaction: t,
+          force: true,
+        });
+      }
+    } else {
+      // Actualiza la persona temporal con los nuevos datos y marca definitiva
+      personaActual.dni = dni;
+      personaActual.nombre = nombre;
+      personaActual.fecha_nacimiento = fecha_nacimiento;
+      personaActual.genero = genero;
+      personaActual.telefono = telefono;
+      personaActual.direccion = direccion;
+      personaActual.email = email;
+      personaActual.es_temporal = false;
+      await personaActual.save({ transaction: t });
+    }
+
+    // Actualizar datos del paciente: contacto y obra social
+    const paciente = identidad.paciente;
+    if (paciente) {
+      paciente.contacto_emergencia = contacto_emergencia;
+      paciente.obra_social_id = obra_social_id;
+      await paciente.save({ transaction: t });
+    } else {
+      throw new Error("Paciente no encontrado asociado a la identidad médica");
+    }
+
+    // Actualizar la admisión con recepcionista y motivo
+    const admision = internacion.admision;
+    if (!admision) throw new Error("Admisión no encontrada");
+    admision.recepcionista_id = recepcionista_id;
+    admision.motivo_id = motivo_id;
+    await admision.save({ transaction: t });
+
+    // ¡Importante! Actualizar la identidad médica para marcarla como definitiva
+    identidad.es_temporal = false;
+    await identidad.save({ transaction: t });
+
+    await t.commit();
+    res.redirect(
+      `/internaciones/${internacionId}?msg=Datos actualizados correctamente`
+    );
+  } catch (err) {
+    await t.rollback();
+    console.error("Error al actualizar datos de emergencia:", err);
+    res.redirect(
+      `/internaciones/${internacionId}?err=${encodeURIComponent(err.message)}`
+    );
+  }
+}
+
 module.exports = {
   generarCodigoTemporal,
   registrarEmergencia,
+  mostrarActualizarDatos,
+  actualizarDatosEmergencia,
 };

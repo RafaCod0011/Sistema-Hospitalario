@@ -4,6 +4,5 @@ const internacionController = require("../../controller/Internaciones/internacio
 
 router.get("/:id", internacionController.mostrarInternacion);
 router.get("/", internacionController.listarInternaciones);
-router.post("/:id/identificar", internacionController.identificarPaciente);
 
 module.exports = router;
