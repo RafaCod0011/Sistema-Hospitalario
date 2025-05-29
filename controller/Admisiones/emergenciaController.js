@@ -14,6 +14,61 @@ const sequelize = require("../../config/db");
 function generarCodigoTemporal() {
   return "TEMP-" + Math.random().toString(36).substr(2, 9).toUpperCase();
 }
+
+function validarPersona(persona) {
+  const regex = {
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    dni: /^\d{7,8}$/,
+    telefono:
+      /^(?=(?:.*\d){10,})\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$/,
+  };
+  const camposRequeridos = [
+    "nombre",
+    "dni",
+    "fecha_nacimiento",
+    "genero",
+    "telefono",
+    "direccion",
+    "email",
+    "confirm_email",
+  ];
+  for (const campo of camposRequeridos) {
+    if (!persona[campo]) {
+      return `El campo "${campo}" es obligatorio.`;
+    }
+  }
+
+  if (!regex.email.test(persona.email)) {
+    return "Formato de email inválido.";
+  }
+
+  if (persona.email !== persona.confirm_email) {
+    return "Los emails no coinciden.";
+  }
+
+  if (!regex.dni.test(persona.dni)) {
+    return "DNI debe contener solo números (7 u 8 dígitos).";
+  }
+
+  if (!regex.telefono.test(persona.telefono)) {
+    return "Formato de teléfono inválido.";
+  }
+
+  const añoMinimo = 1900;
+  const fechaNacimiento = new Date(persona.fecha_nacimiento);
+  if (isNaN(fechaNacimiento.getTime())) {
+    return "Fecha de nacimiento inválida.";
+  }
+  if (fechaNacimiento.getFullYear() < añoMinimo) {
+    return `La fecha de nacimiento no puede ser anterior a ${añoMinimo}.`;
+  }
+  const hoy = new Date();
+  if (fechaNacimiento > hoy) {
+    return "La fecha de nacimiento no puede ser futura.";
+  }
+
+  return null;
+}
 async function registrarEmergencia(req, res) {
   try {
     const { internacion } = await sequelize.transaction(async (t) => {
@@ -198,25 +253,58 @@ async function actualizarDatosEmergencia(req, res) {
     telefono,
     direccion,
     email,
-    confirm_email,
     recepcionista_id,
     motivo_id,
     contacto_emergencia,
     obra_social_id,
   } = req.body;
 
-  // ARMAR LAS VALIDACIONES DE FORMULARIO
-  // Validar que email y confirmar email coinciden
-  if (email !== confirm_email) {
-    return res.redirect(
-      `/internaciones/${internacionId}?err=${encodeURIComponent(
-        "El email y confirmar email deben coincidir"
-      )}`
-    );
-  }
+  const errorValidacion = validarPersona(req.body);
+  if (errorValidacion) {
+    console.log("Error de validación:", errorValidacion);
+    const obrasSociales = await ObraSocial.findAll();
+    const motivos = await AdmisionMotivo.findAll();
+    const recepcionistas = await Recepcionista.findAll({
+      include: [{ model: Persona, as: "persona" }],
+    });
+    const internacion = await Internacion.findByPk(internacionId, {
+      include: [
+        {
+          model: Admision,
+          as: "admision",
+          include: [
+            {
+              model: IdentidadMedica,
+              as: "identidad_medica",
+              include: [
+                { model: Persona, as: "persona" },
+                { model: Paciente, as: "paciente" },
+              ],
+            },
+            {
+              model: AdmisionMotivo,
+              as: "motivo",
+              attributes: ["descripcion"],
+            },
+          ],
+        },
+      ],
+    });
 
+    return res.status(400).render("Internaciones/actualizar-datos", {
+      error: errorValidacion,
+      persona: req.body,
+      internacionId,
+      internacion,
+      obrasSociales,
+      recepcionistas,
+      motivos,
+    });
+  }
+  console.log("Validación completada correctamente.");
   const t = await sequelize.transaction();
   try {
+    console.log("Buscando internación:", internacionId);
     const internacion = await Internacion.findByPk(internacionId, {
       include: [
         {
@@ -254,6 +342,7 @@ async function actualizarDatosEmergencia(req, res) {
       ],
       transaction: t,
     });
+
     if (!internacion) throw new Error("Internación no encontrada");
 
     const identidad = internacion.admision.identidad_medica;
@@ -291,6 +380,7 @@ async function actualizarDatosEmergencia(req, res) {
       personaActual.direccion = direccion;
       personaActual.email = email;
       personaActual.es_temporal = false;
+      personaActual.observaciones = "Datos actualizados en la emergencia";
       await personaActual.save({ transaction: t });
     }
 

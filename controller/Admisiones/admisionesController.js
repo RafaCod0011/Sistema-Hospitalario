@@ -186,54 +186,67 @@ async function crearAdmision(req, res) {
     });
   }
 
+  const t = await sequelize.transaction();
+
   try {
     // 4) Buscar o crear identidad médica
     let identidad = persona_id
-      ? await IdentidadMedica.findOne({ where: { persona_id } })
+      ? await IdentidadMedica.findOne({ where: { persona_id }, transaction: t })
       : null;
     if (!identidad) {
-      identidad = await IdentidadMedica.create({
-        es_temporal: true,
-        codigo_temp: generarCodigoTemporal(),
-        fecha_creacion: new Date(),
-        persona_id: persona_id || null,
-      });
+      identidad = await IdentidadMedica.create(
+        {
+          es_temporal: true,
+          codigo_temp: generarCodigoTemporal(),
+          fecha_creacion: new Date(),
+          persona_id: persona_id || null,
+        },
+        { transaction: t }
+      );
     }
 
-    // 5) Crear o actualizar paciente
-    let paciente = await Paciente.findOne({
-      where: { identidad_medica_id: identidad.id },
-    });
+    // 5) Crear o actualizar paciente utilizando la asociación
+    let paciente = await identidad.getPaciente({ transaction: t });
     if (!paciente) {
-      paciente = await Paciente.create({
-        identidad_medica_id: identidad.id,
-        obra_social_id,
-        contacto_emergencia,
-      });
+      // No existe un paciente asociado, así que se crea uno
+      paciente = await Paciente.create(
+        {
+          obra_social_id,
+          contacto_emergencia,
+        },
+        { transaction: t }
+      );
+      // Asigna la relación: actualiza la identidad médica para vincularla al paciente creado
+      identidad.paciente_id = paciente.id;
+      await identidad.save({ transaction: t });
     } else {
+      // Si ya existe, actualiza sus campos
       paciente.obra_social_id = obra_social_id;
       paciente.contacto_emergencia = contacto_emergencia;
-      await paciente.save();
+      await paciente.save({ transaction: t });
     }
 
     // 6) Crear admisión
-    const nuevaAdmision = await Admision.create({
-      identidad_medica_id: identidad.id,
-      recepcionista_id,
-      motivo_id,
-    });
+    const nuevaAdmision = await Admision.create(
+      {
+        identidad_medica_id: identidad.id,
+        recepcionista_id,
+        motivo_id,
+      },
+      { transaction: t }
+    );
 
     // 7) Actualizar identidad temporal si aplica
     if (persona_id && identidad.es_temporal) {
       identidad.es_temporal = false;
-      await identidad.save();
+      await identidad.save({ transaction: t });
     }
 
-    // Éxito: redirigir
+    await t.commit();
     return res.redirect(`/Admisiones/asignar/${nuevaAdmision.id}`);
   } catch (error) {
+    await t.rollback();
     console.error("Error en crearAdmision:", error);
-    // Renderizar de nuevo con datos completos y mensaje de error
     return res.status(500).render("Admisiones/registro", {
       error: "Error al procesar la admisión",
       values: {
@@ -250,7 +263,6 @@ async function crearAdmision(req, res) {
     });
   }
 }
-
 async function mostrarAsignacionCama(req, res) {
   const { admisionId } = req.params;
   try {
