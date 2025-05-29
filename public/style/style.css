@@ -85,7 +85,8 @@ nav.navbar .navbar-nav .nav-link i.bi {
 
 .container {
   background-color: rgba(255, 255, 255, 0.8);
-  padding: 6rem;
+  padding: 4rem;
+  padding-bottom: 2rem;
   border-radius: 8px;
   margin-top: 6rem;
   margin-bottom: 6rem;

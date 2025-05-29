@@ -1,15 +1,24 @@
+/* eslint-env browser */
+/* global document, window, Swal */
+
 function initRegistroEmergencia() {
-  const { document, window } = globalThis;
   document.querySelectorAll(".emergencia-link").forEach((link) => {
     link.addEventListener("click", async (e) => {
       e.preventDefault();
-      if (
-        !window.confirm(
-          "Está a punto de registrar un ingreso por emergencia, ¿está seguro?"
-        )
-      ) {
+
+      const { value: confirm } = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Estás a punto de registrar un ingreso por emergencia.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, registrar",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (!confirm) {
         return;
       }
+
       try {
         const tokenMeta = document.querySelector('meta[name="csrf-token"]');
         const csrfToken = tokenMeta ? tokenMeta.getAttribute("content") : "";
@@ -28,11 +37,22 @@ function initRegistroEmergencia() {
           throw new Error(err.error || "Error al registrar emergencia");
         }
 
-        window.alert("¡Emergencia registrada correctamente!");
         const data = await response.json();
+
+        await Swal.fire({
+          title: "¡Hecho!",
+          text: "La emergencia se registró correctamente.",
+          icon: "success",
+          confirmButtonText: "Continuar",
+        });
+
         window.location.href = `/internaciones/${data.internacion.id}`;
       } catch (err) {
-        window.alert(err.message);
+        Swal.fire({
+          title: "Error",
+          text: err.message,
+          icon: "error",
+        });
       }
     });
   });

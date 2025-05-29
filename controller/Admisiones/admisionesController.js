@@ -20,14 +20,14 @@ async function buscarPorDNI(req, res) {
   const { dni } = req.body;
   try {
     const persona = await Persona.findOne({ where: { dni } });
+
     if (!persona) {
-      return res.redirect(`/persona/nuevo?dni=${dni}`);
+      return res.json({ found: false, dni });
     }
-    // Si la persona existe, redirige al formulario de admisión para completar la admisión
-    res.redirect(`/admisiones/nueva/${persona.id}`);
+    return res.json({ found: true, personaId: persona.id });
   } catch (error) {
     console.error("Error al buscar persona por DNI:", error);
-    res.status(500).send("Error interno");
+    return res.status(500).json({ error: "Error interno" });
   }
 }
 function validarAdmision({

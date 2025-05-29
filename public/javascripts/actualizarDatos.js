@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function lockPersonaFields() {
     document.getElementById("nombre").setAttribute("readonly", true);
     document.getElementById("fecha_nacimiento").setAttribute("readonly", true);
-    document.getElementById("genero").setAttribute("disabled", true);
+    // document.getElementById("genero").setAttribute("disabled", true);
     document.getElementById("telefono").setAttribute("readonly", true);
     document.getElementById("direccion").setAttribute("readonly", true);
     document.getElementById("email").setAttribute("readonly", true);
