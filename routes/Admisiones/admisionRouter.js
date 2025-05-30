@@ -3,6 +3,8 @@ const router = express.Router();
 
 const admisionController = require("../../controller/Admisiones/admisionesController");
 
+router.get("/habitaciones", admisionController.obtenerHabitacionesPorSala);
+router.get("/camas", admisionController.obtenerCamasDisponibles);
 router.get("/", admisionController.buscar);
 router.get("/listar", admisionController.listarAdmisiones);
 router.post("/buscar", admisionController.buscarPorDNI);

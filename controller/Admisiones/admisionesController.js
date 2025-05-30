@@ -7,6 +7,7 @@ const Recepcionista = require("../../models/sequelize/Personas/recepcionistas");
 const ObraSocial = require("../../models/sequelize/Pacientes/obra_social");
 const Sala = require("../../models/sequelize/Camas/salas");
 const Cama = require("../../models/sequelize/Camas/camas");
+const Habitacion = require("../../models/sequelize/Camas/habitaciones");
 const Internacion = require("../../models/sequelize/Internacion/internaciones");
 const sequelize = require("../../config/db");
 
@@ -266,12 +267,25 @@ async function crearAdmision(req, res) {
 async function mostrarAsignacionCama(req, res) {
   const { admisionId } = req.params;
   try {
-    const admision = await Admision.findByPk(admisionId);
+    const admision = await Admision.findByPk(admisionId, {
+      include: {
+        model: IdentidadMedica,
+        as: "identidad_medica",
+        include: {
+          model: Persona,
+          as: "persona",
+          attributes: ["genero"],
+        },
+      },
+    });
     const salas = await Sala.findAll();
+
+    const personaGenero = admision.identidad_medica.persona.genero;
 
     res.render("Admisiones/asignar", {
       admision,
       salas,
+      personaGenero,
       error: null,
     });
   } catch (error) {
@@ -422,7 +436,80 @@ async function eliminarAdmision(req, res) {
     });
   }
 }
+async function obtenerCamasDisponibles(req, res) {
+  try {
+    const { habitacionId, personaGenero } = req.query;
+    if (!habitacionId || !personaGenero) {
+      return res.status(400).json({ error: "Faltan parámetros" });
+    }
 
+    // Buscamos si hay internación cuya cama pertenece a la habitación
+    const internado = await Internacion.findOne({
+      include: [
+        {
+          model: Cama,
+          where: { habitacion_id: habitacionId },
+        },
+        {
+          model: Admision,
+          as: "admision",
+          include: [
+            {
+              model: IdentidadMedica,
+              as: "identidad_medica",
+              include: [
+                { model: Persona, as: "persona", attributes: ["genero"] },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    const generoExistente = internado
+      ? internado.admision.identidad_medica.persona.genero
+      : null;
+
+    // Listamos camas libres e higienizadas en la habitación
+    let camas = await Cama.findAll({
+      where: {
+        habitacion_id: habitacionId,
+        estado: "libre",
+        higienizada: true,
+      },
+      order: [["numero_en_habitacion", "ASC"]],
+    });
+
+    // Filtrado por sexo si ya hay un internado
+    if (generoExistente && personaGenero !== generoExistente) {
+      camas = [];
+    }
+
+    return res.json(camas);
+  } catch (error) {
+    console.error("Error al obtener camas:", error);
+    return res.status(500).json({ error: "Error interno al cargar camas" });
+  }
+}
+
+async function obtenerHabitacionesPorSala(req, res) {
+  try {
+    const { salaId } = req.query;
+    if (!salaId) {
+      return res.status(400).json({ error: "Falta salaId" });
+    }
+    const habitaciones = await Habitacion.findAll({
+      where: { sala_id: salaId },
+      order: [["numero", "ASC"]],
+    });
+    return res.json(habitaciones);
+  } catch (error) {
+    console.error("Error al obtener habitaciones:", error);
+    return res
+      .status(500)
+      .json({ error: "Error interno al cargar habitaciones" });
+  }
+}
 module.exports = {
   buscarPorDNI,
   nuevaAdmision,
@@ -432,4 +519,6 @@ module.exports = {
   asignarCama,
   listarAdmisiones,
   eliminarAdmision,
+  obtenerCamasDisponibles,
+  obtenerHabitacionesPorSala,
 };
