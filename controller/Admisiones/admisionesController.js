@@ -21,11 +21,48 @@ async function buscarPorDNI(req, res) {
   const { dni } = req.body;
   try {
     const persona = await Persona.findOne({ where: { dni } });
-
     if (!persona) {
       return res.json({ found: false, dni });
     }
-    return res.json({ found: true, personaId: persona.id });
+
+    const identidades = await IdentidadMedica.findAll({
+      where: { persona_id: persona.id },
+      attributes: ["id"],
+    });
+    const identidadIds = identidades.map((i) => i.id);
+
+    let admisionIds = [];
+    if (identidadIds.length) {
+      const admisiones = await Admision.findAll({
+        where: { identidad_medica_id: identidadIds },
+        attributes: ["id"],
+      });
+      admisionIds = admisiones.map((a) => a.id);
+    }
+
+    let internado = null;
+    if (admisionIds.length) {
+      internado = await Internacion.findOne({
+        where: {
+          admision_id: admisionIds,
+          estado: "en curso",
+        },
+      });
+    }
+    if (internado) {
+      return res.json({
+        found: true,
+        personaId: persona.id,
+        interned: true,
+        internacionId: internado.id,
+      });
+    } else {
+      return res.json({
+        found: true,
+        personaId: persona.id,
+        interned: false,
+      });
+    }
   } catch (error) {
     console.error("Error al buscar persona por DNI:", error);
     return res.status(500).json({ error: "Error interno" });
@@ -423,14 +460,28 @@ async function eliminarAdmision(req, res) {
         error: "Admisión no encontrada",
       });
     }
+
     await admision.destroy();
-    res.json({
+    return res.json({
       success: true,
       message: "Admisión eliminada correctamente",
     });
   } catch (error) {
     console.error("Error al eliminar admisión:", error);
-    res.status(500).json({
+
+    // Detectamos el error de FK
+    const fkError =
+      error.name === "SequelizeForeignKeyConstraintError" ||
+      (error.parent && error.parent.errno === 1451);
+
+    if (fkError) {
+      return res.status(400).json({
+        success: false,
+        error: "No se puede eliminar una admisión con una internación activa.",
+      });
+    }
+
+    return res.status(500).json({
       success: false,
       error: "Error interno al eliminar la admisión",
     });
