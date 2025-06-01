@@ -10,7 +10,7 @@ const IdentidadMedica = sequelize.define(
       autoIncrement: true,
     },
     paciente_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: true,
     },
     persona_id: {
