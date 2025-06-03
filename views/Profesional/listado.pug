@@ -8,37 +8,39 @@ block style
 block content
 
         h1.text-center.mb-4 Listado de Profesionales
-        .table-responsive
-            table.table.table-striped.table-hover.table-bordered
-                thead.bg-dark.text-white
-                    tr
-                        th(scope="col") ID
-                        th(scope="col") Nombre
-                        th(scope="col") Cargo
-                        th(scope="col") DNI
-                        th(scope="col") Fecha de Nacimiento
-                        th(scope="col") Género
-                        th(scope="col") Teléfono
-                        th(scope="col") Dirección
-                        th(scope="col") Especialidad
-                        th(scope="col") Matricula
-                        
-                        
-                tbody
-                    each profesional in profesionales
-                        tr
-                            td= profesional.id
-                            td= profesional.persona ? profesional.persona.nombre : ''
-                            td= profesional.profesional_salud
-                            td= profesional.persona ? profesional.persona.dni : ''
-                            td= profesional.persona ? profesional.persona.fecha_nacimiento : ''
-                            td= profesional.persona ? profesional.persona.genero : ''
-                            td= profesional.persona ? profesional.persona.telefono : ''
-                            td= profesional.persona ? profesional.persona.direccion : ''
-                            td= profesional.Especialidad ? profesional.Especialidad.descripcion : ''
-                            td= profesional.matricula
-                            
+        if profesionales.length
+          .table-responsive
+              table.table.table-striped.table-hover.table-bordered
+                  thead.bg-dark.text-white
+                      tr
+                          th(scope="col") ID
+                          th(scope="col") Nombre
+                          th(scope="col") Cargo
+                          th(scope="col") DNI
+                          th(scope="col") Fecha de Nacimiento
+                          th(scope="col") Género
+                          th(scope="col") Teléfono
+                          th(scope="col") Dirección
+                          th(scope="col") Especialidad
+                          th(scope="col") Matricula
+                          
+                          
+                  tbody
+                      each profesional in profesionales
+                          tr
+                              td= profesional.id
+                              td= profesional.persona ? profesional.persona.nombre : ''
+                              td= profesional.profesional_salud
+                              td= profesional.persona ? profesional.persona.dni : ''
+                              td= profesional.persona ? profesional.persona.fecha_nacimiento : ''
+                              td= profesional.persona ? profesional.persona.genero : ''
+                              td= profesional.persona ? profesional.persona.telefono : ''
+                              td= profesional.persona ? profesional.persona.direccion : ''
+                              td= profesional.Especialidad ? profesional.Especialidad.descripcion : ''
+                              td= profesional.matricula
+        else 
+          .alert.alert-info No hay profesionales registrados.                    
 
 
         .text-center
-           a.btn.btn-primary.btn-lg(href="/profesional/nuevo") Buscar Persona
+           a.btn.btn-primary.btn-lg(href="/profesional/nuevo") Añadir profesional
