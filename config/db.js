@@ -12,6 +12,7 @@ const sequelize = new Sequelize(
     dialect: "mysql",
     dialectModule: mysql2,
     logging: false,
+    timezone: "-03:00",
   }
 );
 

@@ -142,7 +142,6 @@ async function listar(req, res) {
         },
       ],
     });
-    console.log(profesionales);
     res.render("Profesional/listado", { profesionales });
   } catch (error) {
     console.error("Error al listar los medicos:", error);

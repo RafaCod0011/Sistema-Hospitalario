@@ -208,8 +208,87 @@ async function listarInternaciones(req, res) {
       .render("error", { error: "No se pudo listar internaciones" });
   }
 }
+async function listarInternados(req, res) {
+  try {
+    const internaciones = await Internacion.findAll({
+      where: {
+        estado: "en curso",
+      },
+      include: [
+        {
+          model: Admision,
+          as: "admision",
+          include: [
+            {
+              model: IdentidadMedica,
+              as: "identidad_medica",
+              include: [
+                {
+                  model: Paciente,
+                  as: "paciente",
+                  include: [
+                    {
+                      model: ObraSocial,
+                      as: "obra_social",
+                      attributes: ["nombre"],
+                    },
+                  ],
+                  attributes: ["contacto_emergencia"],
+                },
+                {
+                  model: Persona,
+                  as: "persona",
+                  attributes: ["nombre", "dni", "telefono"],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Cama,
+          attributes: ["numero_en_habitacion"],
+          include: [
+            {
+              model: Habitacion,
+              attributes: ["numero"],
+              include: [
+                {
+                  model: Sala,
+                  attributes: ["nombre"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      order: [["fecha_ingreso", "DESC"]],
+    });
 
+    // Procesar resultados
+    const pacientes = internaciones.map((internacion) => {
+      const identidad = internacion.admision?.identidad_medica;
+
+      return {
+        nombre: identidad?.persona?.nombre || "N/A",
+        dni: identidad?.persona?.dni || "N/A",
+        telefono: identidad?.persona?.telefono || "N/A",
+        contacto_emergencia: identidad?.paciente?.contacto_emergencia || "N/A",
+        obra_social:
+          identidad?.paciente?.obra_social?.nombre || "Sin obra social",
+        sala: internacion.Cama?.Habitacion?.Sala?.nombre || "N/A",
+        habitacion: internacion.Cama?.Habitacion?.numero || "N/A",
+        cama: internacion.Cama?.numero_en_habitacion || "N/A",
+      };
+    });
+
+    res.render("Paciente/listar", { pacientes });
+  } catch (error) {
+    console.error("Error al listar pacientes internados:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+}
 module.exports = {
   mostrarInternacion,
   listarInternaciones,
+  listarInternados,
 };
