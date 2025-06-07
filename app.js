@@ -13,7 +13,6 @@ const profesionalRouter = require("./routes/Persona/profesionalRouter");
 const medicoRouter = require("./routes/Persona/medicoRouter");
 const enfermeroRouter = require("./routes/Persona/enfermeroRouter");
 const admisionRouter = require("./routes/Admisiones/admisionRouter");
-const apiRouter = require("./routes/api");
 const internacionRouter = require("./routes/Internaciones/internacionRouter");
 const emergenciaRouter = require("./routes/Internaciones/emergenciaRouter");
 
@@ -35,7 +34,6 @@ app.use("/profesional", profesionalRouter);
 app.use("/medico", medicoRouter);
 app.use("/enfermero", enfermeroRouter);
 app.use("/admisiones", admisionRouter);
-app.use("/api", apiRouter);
 app.use("/internaciones", internacionRouter);
 app.use("/emergencias", emergenciaRouter);
 
