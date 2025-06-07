@@ -102,17 +102,26 @@ async function crear(req, res) {
 }
 
 async function formulario(req, res) {
-  const dni = req.body?.dni || req.params?.dni;
+  const dni = req.body.dni;
+
   try {
-    let persona = null;
-    if (dni) {
-      persona = await Persona.findOne({ where: { dni } });
+    const persona = await Persona.findOne({ where: { dni } });
+
+    if (persona) {
+      const especialidades = await Especialidad.findAll();
+      return res.render("Profesional/registro", { persona, especialidades });
     }
-    const especialidades = await Especialidad.findAll();
-    res.render("Profesional/registro", { persona, especialidades });
+
+    res.render("Profesional/buscar", {
+      error: `No se encontró persona con DNI ${dni}`,
+      dni,
+    });
   } catch (error) {
-    console.error("Error al obtener datos para el formulario", error);
-    res.status(500).send("Error al obtener datos para el formulario");
+    console.error("Error al buscar persona:", error);
+    res.render("Profesional/buscar", {
+      error: "Error en el servidor al buscar la persona",
+      dni,
+    });
   }
 }
 

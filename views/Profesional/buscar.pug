@@ -12,6 +12,19 @@ block content
         .row.g-3
             .col-md6 
                 label.form-label(for="dni") Ingrese el DNI
-                input.form-control(type="text" name="dni" id="dni" placeholder="Ingrese el DNI" value= values ? values.dni : '' required)
+                input.form-control(
+                    type="text" 
+                    name="dni" 
+                    id="dni" 
+                    placeholder="Ingrese el DNI"
+                    value= dni || ''
+                    required
+                    autofocus
+                )
             .col-12.text-center
                 button.btn.btn-primary.btn-lg(type="submit") Buscar
+        if error
+            .alert.alert-danger.mt-3 #{error}
+
+block scripts
+    script(src="/javascripts/buscarProfesional.js")

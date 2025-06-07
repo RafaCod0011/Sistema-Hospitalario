@@ -1,5 +1,5 @@
 /* eslint-env browser */
-/* global document, window */
+/* global document, window,Swal */
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log("Script de búsqueda DNI ejecutado.");
@@ -72,9 +72,12 @@ document.addEventListener("DOMContentLoaded", function () {
             // Bloquear los campos de Datos de Persona si se encontró la persona
             lockPersonaFields();
           } else {
-            window.alert(
-              "No existe una persona definitiva con ese DNI. Completa el resto de los datos."
-            );
+            Swal.fire({
+              title: "No existe una persona definitiva con ese DNI",
+              text: "Completa el resto de los datos.",
+              icon: "info",
+              confirmButtonText: "Aceptar",
+            });
             // Desbloquear los campos para permitir la llenada manual
             unlockPersonaFields();
             document.getElementById("nombre").value = "";

@@ -5,7 +5,7 @@ const Recepcionista = sequelize.define(
   "Recepcionista",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    usuario_id: DataTypes.INTEGER,
+    persona_id: { type: DataTypes.INTEGER, allowNull: true },
   },
   {
     sequelize,
